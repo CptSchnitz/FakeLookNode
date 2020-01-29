@@ -1,0 +1,14 @@
+server:
+  app:
+    port: 4000
+  dbConfig:
+      user: ofer
+      password: password1234
+      database: FakeLook
+      server: localhost
+  log:
+    maxSize: 32768
+    paths:
+      log: ./logs/log.log
+      access: logs/access.log
+      error: logs/error.log
