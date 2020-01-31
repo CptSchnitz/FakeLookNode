@@ -1,9 +1,7 @@
 const sql = require("mssql");
 const config = require("config");
 
-const config = config.get("server.dbConfig")
-
-const poolPromise = new sql.ConnectionPool(config)
+const poolPromise = new sql.ConnectionPool(config.get('server.dbConfig'))
     .connect()
     .then(pool => {
         console.log("connected to mssql");
