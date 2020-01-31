@@ -1,7 +1,8 @@
-const express = require("express");
-const api = express.Router({ mergeParams: true });
-const postController = require("./../../controllers/posts.controller");
+const express = require('express');
 
-api.get("/Posts", postController.GetPosts);
+const api = express.Router({ mergeParams: true });
+const postController = require('./../../controllers/posts.controller');
+
+api.get('/Posts', postController.GetPosts);
 
 module.exports = api;

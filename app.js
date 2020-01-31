@@ -1,32 +1,37 @@
-const express = require("express");
-const config = require("config");
-const winston = require("winston");
-const middlewares = require("./middlewares");
-const cors = require("cors");
-const router = require("./routes");
-const port = config.get("server.app.port");
+const express = require('express');
+const config = require('config');
+const winston = require('winston');
+const cors = require('cors');
+const middlewares = require('./middlewares');
+const router = require('./routes');
+
+const port = config.get('server.app.port');
 const app = express();
 
-const logPaths = config.get("server.log.paths");
+const logPaths = config.get('server.log.paths');
 
+const { format, transports } = winston;
 winston.configure({
-    transports: [new winston.transports.File({ filename: logPaths.log })]
+  transports: [
+    new transports.File({ filename: logPaths.log }),
+  ],
+  format: format.combine(format.timestamp(), format.splat(), format.simple()),
 });
 
-app.use(cors(config.get("server.corsOptions")));
+app.use(cors(config.get('server.corsOptions')));
 
 app.use(middlewares.accessLogger);
 
-app.use("/", router);
+app.use('/', router);
 
-app.use("*", function(req, res, next) {
-    let err = new Error("Page Not Found");
-    err.statusCode = 404;
-    next(err);
+app.use('*', (req, res, next) => {
+  const err = new Error('Page Not Found');
+  err.statusCode = 404;
+  next(err);
 });
 
 app.use(middlewares.errorLogger);
 
 app.use(middlewares.errorHandler);
 
-app.listen(port, () => console.log(`Listening on port ${port}.`));
+app.listen(port, () => winston.log('info', `Listening on port ${port}.`));
