@@ -2,7 +2,8 @@ const sql = require('mssql');
 const winston = require('winston');
 const config = require('config');
 
-const poolPromise = new sql.ConnectionPool(config.get('server.dbConfig'))
+const dbConfig = config.get('server.dbConfig');
+const poolPromise = new sql.ConnectionPool(dbConfig)
   .connect()
   .then((pool) => {
     winston.log('info', 'connected to mssql');

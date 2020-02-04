@@ -7,7 +7,7 @@ server:
   dbConfig:
       user: ofer
       password: password1234
-      database: GeoTest
+      database: FakeLook
       server: localhost
   log:
     maxSize: 32768

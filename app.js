@@ -22,11 +22,13 @@ app.use(cors(config.get('server.corsOptions')));
 
 app.use(middlewares.accessLogger);
 
+app.use(express.json());
+
 app.use('/', router);
 
 app.use('*', (req, res, next) => {
-  const err = new Error('Page Not Found');
-  err.statusCode = 404;
+  const err = new Error('path not valid');
+  res.statusCode = 404;
   next(err);
 });
 

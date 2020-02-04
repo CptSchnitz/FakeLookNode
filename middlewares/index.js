@@ -18,15 +18,13 @@ const errorLogger = expressWinston.errorLogger({
     winston.format.prettyPrint(),
     winston.format.timestamp(),
   ),
-  skip: (req, res) => res.status < 500,
+  skip: (req, res, err) => err.statusCode < 500,
 });
 
 // handle errors
-const errorHandler = (err, req, res) => {
-  if (!err.statusCode) {
-    res.status(500);
-  }
-  res.send(err.message);
+// eslint-disable-next-line no-unused-vars
+const errorHandler = (err, req, res, _next) => {
+  res.status(err.status || 500).send(err.message);
 };
 
 module.exports = { errorHandler, accessLogger, errorLogger };

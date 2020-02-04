@@ -1,8 +1,13 @@
 const express = require('express');
+const validator = require('express-joi-validation').createValidator({});
+const postSchema = require('./../../models/post.model');
 
-const api = express.Router({ mergeParams: true });
+const postsApi = express.Router({ mergeParams: true });
 const postController = require('./../../controllers/posts.controller');
 
-api.get('/Posts', postController.GetPosts);
+postsApi.get('/', postController.getPosts);
+postsApi.post('/', validator.body(postSchema), postController.createPost);
+postsApi.get('/:id', postController.getPostById);
 
-module.exports = api;
+
+module.exports = postsApi;
