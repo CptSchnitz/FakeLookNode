@@ -7,7 +7,24 @@ const createPost = async (post) => {
   return postDb.createPost(postWithPublishDate);
 };
 
-const getPosts = async (postFilters) => postDb.getPosts(postFilters);
+const getPosts = async (postFilters) => {
+  const posts = await postDb.getPosts(postFilters);
+
+  const formattedPosts = posts.map((post) => ({
+    postId: post.PostId,
+    image: post.Image,
+    publishDate: Date,
+    text: post.Text,
+    user: {
+      id: post.UserId,
+      name: post.UserFullName,
+    },
+    likes: post.Likes,
+    location: { lng: post.Lng, lat: post.Lat },
+  }));
+
+  return formattedPosts;
+};
 
 
 module.exports = { getPostById, createPost, getPosts };

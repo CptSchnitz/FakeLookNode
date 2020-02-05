@@ -3,7 +3,7 @@ server:
     port: 4000
   corsOptions:
     origin:
-      localhost:4200
+      http://localhost:4200
   dbConfig:
       user: ofer
       password: password1234
