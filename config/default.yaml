@@ -15,3 +15,4 @@ server:
       log: ./logs/log.log
       access: logs/access.log
       error: logs/error.log
+  imagesPath: \images\

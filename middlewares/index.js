@@ -27,4 +27,17 @@ const errorHandler = (err, req, res, _next) => {
   res.status(err.status || 500).send(err.message);
 };
 
-module.exports = { errorHandler, accessLogger, errorLogger };
+const parseData = (req, res, next) => {
+  try {
+    req.body = JSON.parse(req.body.data);
+    next();
+  } catch (error) {
+    const err = new Error('Can\'t parse data in JSON');
+    err.status = 400;
+    next(err);
+  }
+};
+
+module.exports = {
+  errorHandler, accessLogger, errorLogger, parseData,
+};

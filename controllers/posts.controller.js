@@ -1,4 +1,5 @@
 const postService = require('./../services/post.service');
+const imageService = require('./../services/images.service');
 
 const getPosts = async (req, res, next) => {
   try {
@@ -21,7 +22,9 @@ const getPostById = async (req, res, next) => {
 
 const createPost = async (req, res, next) => {
   try {
-    const post = { ...req.body };
+    // console.log(req.file);
+    const image = await imageService.saveImage(req.file.buffer);
+    const post = { ...req.body, userId: 1, image };
     const createdId = await postService.createPost(post);
     res.set('Location', `${req.protocol}://${req.get('host')}${req.originalUrl}/${createdId}`);
     res.sendStatus(201);

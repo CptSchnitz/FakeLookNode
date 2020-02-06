@@ -107,3 +107,4 @@ dist
 config/default.yaml
 
 *.png
+*.webp
