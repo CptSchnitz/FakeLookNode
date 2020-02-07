@@ -3,7 +3,8 @@ const userService = require('./../services/users.service');
 
 const getUsers = async (req, res, next) => {
   try {
-    const result = await userService.getUsers();
+    const { filter } = req.query;
+    const result = await userService.getUsers(filter);
     res.json(result);
   } catch (err) {
     next(err);

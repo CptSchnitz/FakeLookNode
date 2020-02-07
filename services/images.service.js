@@ -10,7 +10,7 @@ const resizeOptions = {
   withoutEnlargement: true,
   fit: 'contain',
   background: {
-    r: 0, g: 0, b: 0, alpha: 255,
+    r: 0, g: 0, b: 0, alpha: 0,
   },
 };
 

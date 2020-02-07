@@ -1,4 +1,4 @@
-const postDb = require('./../db/postDb');
+const postDb = require('../db/post.db');
 
 const getPostById = async (postId) => postDb.getPostById(postId);
 

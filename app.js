@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('config');
 const winston = require('winston');
 const cors = require('cors');
-const middlewares = require('./middlewares');
+const middlewares = require('./middleware');
 const router = require('./routes');
 
 const port = config.get('server.app.port');

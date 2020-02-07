@@ -5,6 +5,8 @@ const requestSchema = require('../../models/imageRequest.model');
 
 const imagesRouter = express.Router();
 
-imagesRouter.get('/:imageUuid', validator.params(requestSchema), imageController.getImage);
+imagesRouter.get('/:imageUuid', validator.params(requestSchema), imageController.getImage(false));
+imagesRouter.get('/thumb/:imageUuid', validator.params(requestSchema), imageController.getImage(true));
+
 
 module.exports = imagesRouter;

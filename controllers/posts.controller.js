@@ -21,13 +21,18 @@ const getPostById = async (req, res, next) => {
 };
 
 const createPost = async (req, res, next) => {
+  const allowedMimes = ['image/jpeg', 'image/png'];
+  if (!allowedMimes.includes(req.file.mimetype)) {
+    next(new Error('Unsupported File Type'));
+  }
   try {
-    // console.log(req.file);
     const image = await imageService.saveImage(req.file.buffer);
+
     const post = { ...req.body, userId: 1, image };
     const createdId = await postService.createPost(post);
+
     res.set('Location', `${req.protocol}://${req.get('host')}${req.originalUrl}/${createdId}`);
-    res.sendStatus(201);
+    res.status(201).send({ message: 'created' });
   } catch (err) {
     next(err);
   }

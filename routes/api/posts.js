@@ -2,7 +2,7 @@ const express = require('express');
 const validator = require('express-joi-validation').createValidator({});
 const multer = require('multer');
 const postSchema = require('./../../models/post.model');
-const { parseData } = require('../../middlewares/index');
+const { parseData } = require('../../middleware/index');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });

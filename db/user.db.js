@@ -1,11 +1,12 @@
 const { poolPromise, sql } = require('./db');
 
-const getUsers = async () => {
+const getUsers = async (filter) => {
   const pool = await poolPromise;
 
   const result = await pool
     .request()
-    .execute('GetAllUsers');
+    .input('filter', filter)
+    .execute('GetUsers');
 
   return result.recordset;
 };
