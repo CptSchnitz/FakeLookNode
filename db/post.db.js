@@ -11,16 +11,34 @@ const getPostById = async (postId) => {
   return result.recordset;
 };
 
-const getPosts = async (postsFilters) => {
+const getPosts = async (postFilter) => {
   const pool = await poolPromise;
+  const filter = { ...postFilter };
 
+  if (filter.tags) {
+    filter.tags = JSON.stringify(filter.tags);
+  }
+
+  if (filter.publishers) {
+    filter.publishers = JSON.stringify(filter.publishers);
+  }
+
+  if (filter.userTags) {
+    filter.userTags = JSON.stringify(filter.userTags);
+  }
+
+  console.log(filter);
   const result = await pool
     .request()
-    .input('lng', sql.Float, postsFilters.location)
-    .input('lat', sql.Float, postsFilters.location)
-    .input('distance', sql.Float, null)
-    .input('startDate', sql.DateTime, postsFilters.startDate)
-    .input('endDate', sql.DateTime, postsFilters.endDate)
+    .input('lng', sql.Float, filter.lng)
+    .input('lat', sql.Float, filter.lat)
+    .input('distance', sql.Float, filter.distance)
+    .input('startDate', sql.DateTime, filter.minDate)
+    .input('endDate', sql.DateTime, filter.maxDate)
+    .input('userTags', filter.userTags)
+    .input('tags', filter.tags)
+    .input('publishers', filter.publishers)
+    .input('orderBy', filter.orderBy)
     .execute('GetPosts');
 
   return result.recordset;
@@ -35,7 +53,7 @@ const createPost = async (post) => {
     .input('Text', sql.NVarChar(500), post.text)
     .input('Lng', sql.Float, post.location.lng)
     .input('Lat', sql.Float, post.location.lat)
-    .input('PublishDate', sql.DateTime, post.publishDate)
+    .input('PublishDate', post.publishDate.toISOString().slice(0, -5))
     .input('UserId', sql.Int, post.userId)
     .input('tags', sql.NVarChar(4000), JSON.stringify(post.tags))
     .input('userTags', sql.NVarChar(4000), JSON.stringify(post.userTags))
@@ -44,5 +62,6 @@ const createPost = async (post) => {
 
   return result.output.PostId;
 };
+
 
 module.exports = { getPostById, createPost, getPosts };

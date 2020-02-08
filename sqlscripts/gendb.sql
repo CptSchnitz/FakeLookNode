@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [FakeLook]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Database [FakeLook]    Script Date: 08/02/2020 17:22:13 ******/
 CREATE DATABASE [FakeLook]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -79,7 +79,7 @@ ALTER DATABASE [FakeLook] SET QUERY_STORE = OFF
 GO
 USE [FakeLook]
 GO
-/****** Object:  Table [dbo].[Comments]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[Comments]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -95,7 +95,7 @@ CREATE TABLE [dbo].[Comments](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentsLikes]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[CommentsLikes]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -110,7 +110,7 @@ CREATE TABLE [dbo].[CommentsLikes](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentsTags]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[CommentsTags]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -125,7 +125,7 @@ CREATE TABLE [dbo].[CommentsTags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentUserTags]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[CommentUserTags]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -140,7 +140,7 @@ CREATE TABLE [dbo].[CommentUserTags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Posts]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[Posts]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -158,7 +158,7 @@ CREATE TABLE [dbo].[Posts](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsLikes]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[PostsLikes]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -173,7 +173,7 @@ CREATE TABLE [dbo].[PostsLikes](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsTags]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[PostsTags]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -188,7 +188,7 @@ CREATE TABLE [dbo].[PostsTags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsUserTags]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[PostsUserTags]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -203,7 +203,7 @@ CREATE TABLE [dbo].[PostsUserTags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tags]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[Tags]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -217,7 +217,7 @@ CREATE TABLE [dbo].[Tags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -300,7 +300,7 @@ REFERENCES [dbo].[Users] ([UserId])
 GO
 ALTER TABLE [dbo].[PostsUserTags] CHECK CONSTRAINT [FK_PostsUserTags_Users]
 GO
-/****** Object:  StoredProcedure [dbo].[CreatePost]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  StoredProcedure [dbo].[CreatePost]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -316,7 +316,7 @@ CREATE PROCEDURE [dbo].[CreatePost]
 	@Text nvarchar(500) = null,
 	@Lng float,
 	@Lat float,
-	@PublishDate date,
+	@PublishDate nvarchar(50),
 	@UserId int,
 	@tags nvarchar(4000),
 	@userTags nvarchar(4000),
@@ -333,7 +333,7 @@ BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	DECLARE 
-	@location AS geography = geography::Point(@Lng, @Lat, 4326)
+	@location AS geography = geography::Point(@Lat,@Lng, 4326)
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
@@ -369,7 +369,7 @@ BEGIN
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreateUser]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  StoredProcedure [dbo].[CreateUser]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -400,7 +400,7 @@ BEGIN
 	set @UserId = SCOPE_IDENTITY()
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetAllUsers]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  StoredProcedure [dbo].[GetAllUsers]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -424,7 +424,7 @@ BEGIN
 	from Users
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetPostById]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  StoredProcedure [dbo].[GetPostById]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -480,7 +480,7 @@ END
 	--where PostId = 2
 	--)
 GO
-/****** Object:  StoredProcedure [dbo].[GetPosts]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  StoredProcedure [dbo].[GetPosts]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -496,13 +496,16 @@ CREATE PROCEDURE [dbo].[GetPosts]
 	@lat float = null,
 	@distance float = null,
 	@startDate datetime = null,
-	@endDate datetime = null
+	@endDate datetime = null,
+	@tags nvarchar(4000) = null,
+	@userTags nvarchar(4000) = null,
+	@publishers nvarchar(4000) = null,
+	@orderBy nvarchar(50) = null
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
-	
+	declare @postIdTable TABLE ([postId] varchar(50))
+
+	-- create the location params
 	IF @lng is not null
 	BEGIN
     -- Insert statements for procedure here
@@ -510,20 +513,93 @@ BEGIN
 		DECLARE @range AS geography = @location.STBuffer(@distance)
 	END
 
+	insert into @postIdTable
+	select Posts.PostId
+	from Posts 
+	where (@lng is null or Posts.Location.STIntersects(@Range) = 1)
+		and (@startDate is null or Posts.PublishDate >= @startDate)
+		and (@endDate is null or Posts.PublishDate < @endDate)
+		and (@publishers is null or Posts.UserId in (select value from openjson(@publishers)))
+
+	-- filter by tags
+	if @tags is not null
+	begin
+		DECLARE @tmpTagsTable TABLE ([Name] varchar(50))
+		insert into @tmpTagsTable
+		select value from openjson(@tags);
+
+		delete from @postIdTable
+		where postId not in (
+			select PostId
+				from Tags join PostsTags on Tags.TagId = PostsTags.TagId
+				where tags.Name in (select * from @tmpTagsTable)
+			union
+				select PostId
+				from Tags join CommentsTags on tags.TagId = CommentsTags.TagId
+					join Comments on CommentsTags.CommentId = Comments.CommentId
+				where tags.Name in (select * from @tmpTagsTable))
+	end
+
+	-- filter by user tags
+		if @userTags is not null
+	begin
+        DECLARE @tmpUserTagsTable TABLE ([UserId] int)
+        insert into @tmpUserTagsTable
+        select value from openjson(@userTags);
+
+		delete from @postIdTable
+		where postId not in (
+			select PostId
+				from PostsUserTags
+				where PostsUserTags.UserId in (select * from @tmpUserTagsTable)
+			union
+			select PostId
+				from CommentUserTags join Comments on CommentUserTags.CommentId = Comments.CommentId
+				where CommentUserTags.UserId in (select * from @tmpTagsTable))
+	end
+
 	select Posts.PostId, Posts.Image, Posts.Location.Long as Lng, Posts.Location.Lat as Lat, posts.PublishDate,
-		Posts.Text, Users.UserId, Users.FirstName + ' ' + Users.LastName as UserFullName, count(PostsLikes.UserId) as Likes
+		Posts.Text, Users.UserId, Users.FirstName + ' ' + Users.LastName as UserFullName, count(PostsLikes.UserId) as PostLikes
 	from Posts join Users on Posts.UserId = Users.UserId 
 		left join PostsLikes on PostsLikes.PostId = Posts.PostId
-	where (@lng is null or Posts.Location.STIntersects(@Range) = 1)
-		and (@startDate is null or Posts.PublishDate > @startDate)
-		and (@endDate is null or Posts.PublishDate < @endDate)
+	where Posts.PostId in (select * from @postIdTable)
 	group by Posts.PostId, Posts.Image, Posts.Location.Long, Posts.Location.Lat, posts.PublishDate,
 		Posts.Text, Users.UserId, Users.FirstName + ' ' + Users.LastName
-	order by Posts.PublishDate desc
+	order by
+		case when @orderBy is null then Posts.PostId
+		when @orderBy = 'date' then Posts.PublishDate 
+		when @orderBy = 'likes' then (select count(UserId) from PostsLikes where PostsLikes.PostId = Posts.PostId)
+	end desc
+END
+--openjson(@userTags) as j
+GO
+/****** Object:  StoredProcedure [dbo].[GetTags]    Script Date: 08/02/2020 17:22:13 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Ofer
+-- Create date: 
+-- Description:	
+-- =============================================
+create PROCEDURE [dbo].[GetTags] 
+	-- Add the parameters for the stored procedure here
+@filter NVARCHAR(50) = null
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	select TagId as tagId, Name as name
+	from Tags
+	where (@filter is null) or charindex(upper(@filter) ,upper(Name)) > 0
 	
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 06/02/2020 3:59:55 PM ******/
+/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 08/02/2020 17:22:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -546,6 +622,32 @@ BEGIN
 	SELECT *
 	from Users
 	where UserId = @UserId
+END
+GO
+/****** Object:  StoredProcedure [dbo].[GetUsers]    Script Date: 08/02/2020 17:22:13 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Ofer
+-- Create date: 
+-- Description:	
+-- =============================================
+CREATE PROCEDURE [dbo].[GetUsers] 
+	-- Add the parameters for the stored procedure here
+@filter NVARCHAR(50) = null
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	select firstName, lastName, users.UserId as userId
+	from Users
+	where (@filter is null) or charindex(upper(@filter) ,upper(Users.FirstName + ' ' + Users.LastName)) > 0
+	
 END
 GO
 USE [master]

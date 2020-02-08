@@ -13,7 +13,7 @@ const getPosts = async (postFilters) => {
   const formattedPosts = posts.map((post) => ({
     postId: post.PostId,
     image: post.Image,
-    publishDate: Date,
+    publishDate: post.PublishDate,
     text: post.Text,
     user: {
       id: post.UserId,
