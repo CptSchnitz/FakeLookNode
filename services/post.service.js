@@ -1,6 +1,11 @@
 const postDb = require('../db/post.db');
+const commentsDb = require('../db/comment.db');
 
-const getPostById = async (postId) => postDb.getPostById(postId);
+const getPostById = async (postId) => {
+  const post = await postDb.getPostById(postId);
+  post.comments = await commentsDb.getCommentsByPostId(postId);
+  return post;
+};
 
 const createPost = async (post) => {
   const postWithPublishDate = { ...post, publishDate: new Date() };
@@ -19,7 +24,7 @@ const getPosts = async (postFilters) => {
       id: post.UserId,
       name: post.UserFullName,
     },
-    likes: post.Likes,
+    likes: post.PostLikes,
     location: { lng: post.Lng, lat: post.Lat },
   }));
 

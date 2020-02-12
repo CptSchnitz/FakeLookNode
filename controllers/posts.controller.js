@@ -12,8 +12,7 @@ const getPosts = async (req, res, next) => {
 
 const getPostById = async (req, res, next) => {
   try {
-    const postId = parseInt(req.params.postId, 10);
-    const result = await postService.getPostById(postId);
+    const result = await postService.getPostById(req.params.postId);
     res.json(result);
   } catch (err) {
     next(err);
@@ -32,7 +31,7 @@ const createPost = async (req, res, next) => {
     const createdId = await postService.createPost(post);
 
     res.set('Location', `${req.protocol}://${req.get('host')}${req.originalUrl}/${createdId}`);
-    res.status(201).send({ message: 'created' });
+    res.status(201).send({ message: 'created', postId: createdId });
   } catch (err) {
     next(err);
   }

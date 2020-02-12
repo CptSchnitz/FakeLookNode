@@ -8,7 +8,14 @@ const getPostById = async (postId) => {
     .input('PostId', sql.Int, postId)
     .execute('GetPostById');
 
-  return result.recordset;
+  const post = result.recordset[0][0];
+  if (!post.tags) {
+    post.tags = [];
+  }
+  if (!post.userTags) {
+    post.userTags = [];
+  }
+  return post;
 };
 
 const getPosts = async (postFilter) => {
@@ -27,7 +34,6 @@ const getPosts = async (postFilter) => {
     filter.userTags = JSON.stringify(filter.userTags);
   }
 
-  console.log(filter);
   const result = await pool
     .request()
     .input('lng', sql.Float, filter.lng)

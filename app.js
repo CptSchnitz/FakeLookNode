@@ -28,7 +28,7 @@ app.use('/', router);
 
 app.use('*', (req, res, next) => {
   const err = new Error('path not valid');
-  res.statusCode = 404;
+  err.status = 404;
   next(err);
 });
 

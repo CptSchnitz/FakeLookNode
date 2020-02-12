@@ -1,6 +1,5 @@
 const joi = require('@hapi/joi');
-
-const idSchema = joi.number().positive().integer();
+const idSchema = require('./id.model');
 
 const postSchema = joi.object({
   text: joi.string().allow('').max(500).optional(),

@@ -2,7 +2,7 @@ const sql = require('mssql');
 const winston = require('winston');
 const config = require('config');
 
-const dbConfig = config.get('server.dbConfig');
+const dbConfig = { ...config.get('server.dbConfig'), parseJSON: true };
 const poolPromise = new sql.ConnectionPool(dbConfig)
   .connect()
   .then((pool) => {
