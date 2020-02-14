@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('config');
 const winston = require('winston');
 const cors = require('cors');
-const middlewares = require('./middleware');
+const middleware = require('./middleware');
 const router = require('./routes');
 
 const port = config.get('server.app.port');
@@ -20,7 +20,7 @@ winston.configure({
 
 app.use(cors(config.get('server.corsOptions')));
 
-app.use(middlewares.accessLogger);
+app.use(middleware.accessLogger);
 
 app.use(express.json());
 
@@ -32,8 +32,8 @@ app.use('*', (req, res, next) => {
   next(err);
 });
 
-app.use(middlewares.errorLogger);
+app.use(middleware.errorLogger);
 
-app.use(middlewares.errorHandler);
+app.use(middleware.errorHandler);
 
 app.listen(port, () => winston.log('info', `Listening on port ${port}.`));
