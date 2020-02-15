@@ -4,9 +4,9 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const token = authService.login(email, password);
+    const loginData = await authService.login(email, password);
 
-    res.json({ token });
+    res.json(loginData);
   } catch (error) {
     if (error.name === 'badEmail' || error.name === 'badPassword') {
       const err = new Error('Bad email or password.');
@@ -22,7 +22,7 @@ const register = async (req, res, next) => {
   const user = { ...req.body };
 
   try {
-    const userId = authService.createUser(user);
+    const userId = await authService.createUser(user);
     res.status(201).json({ userId });
   } catch (error) {
     if (error.name === 'badEmail') {
@@ -32,4 +32,14 @@ const register = async (req, res, next) => {
   }
 };
 
-module.exports = { login, register };
+const isTaken = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const isEmailTaken = await authService.checkIfEmailUsed(email);
+    res.status(200).json(isEmailTaken);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { login, register, isTaken };

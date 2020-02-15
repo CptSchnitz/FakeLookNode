@@ -1,10 +1,11 @@
 const { poolPromise } = require('./db');
 
-const getCommentsByPostId = async (postId) => {
+const getCommentsByPostId = async (postId, userId) => {
   const pool = await poolPromise;
   const result = await pool
     .request()
     .input('postId', postId)
+    .input('likedById', userId)
     .execute('GetCommentsByPostId');
 
   return result.recordset[0];
@@ -27,14 +28,16 @@ const createComment = async (comment) => {
   return result.output.commentId;
 };
 
-const getCommentById = async (commentId) => {
+const getCommentById = async (commentId, userId) => {
   const pool = await poolPromise;
   const result = await pool
     .request()
     .input('commentId', commentId)
+    .input('likedById', userId)
     .execute('GetCommentById');
-
-  return result.recordset[0][0];
+  const comment = result.recordset[0][0];
+  comment.likedByUser = !!comment.likedByUser;
+  return comment;
 };
 
 module.exports = { getCommentsByPostId, createComment, getCommentById };

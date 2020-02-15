@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-const jwtSecret = config.get('server.app.port');
+const jwtSecret = config.get('server.secret');
 
 const checkAuth = async (req, res, next) => {
   if (req.headers && req.headers.authorization) {

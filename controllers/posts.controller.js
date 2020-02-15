@@ -12,7 +12,8 @@ const getPosts = async (req, res, next) => {
 
 const getPostById = async (req, res, next) => {
   try {
-    const result = await postService.getPostById(req.params.postId);
+    const result = await postService.getPostById(req.params.postId, req.user.userId);
+    result.likedByUser = !!result.likedByUser;
     res.json(result);
   } catch (err) {
     next(err);
@@ -27,7 +28,7 @@ const createPost = async (req, res, next) => {
   try {
     const image = await imageService.saveImage(req.file.buffer);
 
-    const post = { ...req.body, userId: 1, image };
+    const post = { ...req.body, userId: req.user.userId, image };
     const createdId = await postService.createPost(post);
 
     res.set('Location', `${req.protocol}://${req.get('host')}${req.originalUrl}/${createdId}`);

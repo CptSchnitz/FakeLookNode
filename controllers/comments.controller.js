@@ -12,7 +12,7 @@ const getCommentsByPostId = async (req, res, next) => {
 
 const createComment = async (req, res, next) => {
   try {
-    const comment = { ...req.body, ...req.params, creatorId: 1 };
+    const comment = { ...req.body, ...req.params, creatorId: req.user.userId };
     const createdComment = await commentsService.createComment(comment);
 
     res.json(createdComment);

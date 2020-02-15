@@ -1,9 +1,9 @@
 const postDb = require('../db/post.db');
-const commentsDb = require('../db/comment.db');
+const commentsService = require('./comments.service');
 
-const getPostById = async (postId) => {
-  const post = await postDb.getPostById(postId);
-  post.comments = await commentsDb.getCommentsByPostId(postId);
+const getPostById = async (postId, userId) => {
+  const post = await postDb.getPostById(postId, userId);
+  post.comments = await commentsService.getCommentsByPostId(postId, userId);
   return post;
 };
 

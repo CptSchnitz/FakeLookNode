@@ -1,11 +1,12 @@
 const { poolPromise, sql } = require('./db');
 
-const getPostById = async (postId) => {
+const getPostById = async (postId, userId) => {
   const pool = await poolPromise;
 
   const result = await pool
     .request()
     .input('PostId', sql.Int, postId)
+    .input('likedById', userId)
     .execute('GetPostById');
 
   const post = result.recordset[0][0];

@@ -19,7 +19,7 @@ const getUserById = async (userId) => {
     .input('UserId', sql.Int, userId)
     .execute('GetUserById');
 
-  return result.recordset;
+  return result.recordset[0];
 };
 
 const createUser = async (user) => {
