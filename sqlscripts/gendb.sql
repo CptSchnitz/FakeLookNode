@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [FakeLook]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Database [FakeLook]    Script Date: 20/02/2020 4:06:13 PM ******/
 CREATE DATABASE [FakeLook]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -79,157 +79,157 @@ ALTER DATABASE [FakeLook] SET QUERY_STORE = OFF
 GO
 USE [FakeLook]
 GO
-/****** Object:  Table [dbo].[Comments]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[Comments]    Script Date: 20/02/2020 4:06:14 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Comments](
-	[CommentId] [int] IDENTITY(1,1) NOT NULL,
-	[Text] [nvarchar](500) NULL,
-	[PostId] [int] NOT NULL,
-	[UserId] [int] NOT NULL,
-	[publishDate] [datetime] NULL,
+	[commentId] [int] IDENTITY(1,1) NOT NULL,
+	[text] [nvarchar](500) NULL,
+	[postId] [int] NOT NULL,
+	[creatorId] [int] NOT NULL,
+	[publishDate] [datetime] NOT NULL,
  CONSTRAINT [PK_Comments_1] PRIMARY KEY CLUSTERED 
 (
-	[CommentId] ASC
+	[commentId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentsLikes]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[CommentsLikes]    Script Date: 20/02/2020 4:06:14 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[CommentsLikes](
-	[CommentId] [int] NOT NULL,
-	[UserId] [int] NOT NULL,
+	[commentId] [int] NOT NULL,
+	[likedById] [int] NOT NULL,
  CONSTRAINT [IX_CommentsLikes] UNIQUE NONCLUSTERED 
 (
-	[CommentId] ASC,
-	[UserId] ASC
+	[commentId] ASC,
+	[likedById] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentsTags]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[CommentsTags]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[CommentsTags](
-	[CommentId] [int] NOT NULL,
-	[TagId] [int] NOT NULL,
+	[commentId] [int] NOT NULL,
+	[tagId] [int] NOT NULL,
  CONSTRAINT [IX_CommentsTags] UNIQUE NONCLUSTERED 
 (
-	[CommentId] ASC,
-	[TagId] ASC
+	[commentId] ASC,
+	[tagId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentUserTags]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[CommentUserTags]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[CommentUserTags](
-	[CommentId] [int] NULL,
-	[UserId] [int] NULL,
+	[commentId] [int] NOT NULL,
+	[taggedUserId] [int] NOT NULL,
  CONSTRAINT [IX_CommentUserTags] UNIQUE NONCLUSTERED 
 (
-	[CommentId] ASC,
-	[UserId] ASC
+	[commentId] ASC,
+	[taggedUserId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Posts]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[Posts]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Posts](
-	[PostId] [int] IDENTITY(1,1) NOT NULL,
-	[Text] [nvarchar](500) NULL,
-	[Image] [nvarchar](100) NOT NULL,
-	[Location] [geography] NOT NULL,
-	[PublishDate] [datetime] NOT NULL,
-	[UserId] [int] NOT NULL,
+	[postId] [int] IDENTITY(1,1) NOT NULL,
+	[text] [nvarchar](500) NULL,
+	[imageUuid] [nvarchar](100) NOT NULL,
+	[location] [geography] NOT NULL,
+	[publishDate] [datetime] NOT NULL,
+	[creatorId] [int] NOT NULL,
  CONSTRAINT [PK_Posts] PRIMARY KEY CLUSTERED 
 (
-	[PostId] ASC
+	[postId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsLikes]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[PostsLikes]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[PostsLikes](
-	[PostId] [int] NOT NULL,
-	[UserId] [int] NOT NULL,
+	[postId] [int] NOT NULL,
+	[likedById] [int] NOT NULL,
  CONSTRAINT [IX_PostsLikes] UNIQUE NONCLUSTERED 
 (
-	[PostId] ASC,
-	[UserId] ASC
+	[postId] ASC,
+	[likedById] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsTags]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[PostsTags]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[PostsTags](
-	[PostId] [int] NOT NULL,
-	[TagId] [int] NOT NULL,
+	[postId] [int] NOT NULL,
+	[tagId] [int] NOT NULL,
  CONSTRAINT [IX_PostsTags] UNIQUE NONCLUSTERED 
 (
-	[PostId] ASC,
-	[TagId] ASC
+	[postId] ASC,
+	[tagId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsUserTags]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[PostsUserTags]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[PostsUserTags](
-	[PostId] [int] NOT NULL,
-	[UserId] [int] NOT NULL,
+	[postId] [int] NOT NULL,
+	[taggedUserId] [int] NOT NULL,
  CONSTRAINT [IX_PostsUserTags] UNIQUE NONCLUSTERED 
 (
-	[PostId] ASC,
-	[UserId] ASC
+	[postId] ASC,
+	[taggedUserId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tags]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[Tags]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Tags](
-	[TagId] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](50) NOT NULL,
+	[tagId] [int] IDENTITY(1,1) NOT NULL,
+	[tagName] [nvarchar](50) NOT NULL,
  CONSTRAINT [PK_Tags] PRIMARY KEY CLUSTERED 
 (
-	[TagId] ASC
+	[tagId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserAuth]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[UserAuth]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[UserAuth](
-	[id] [int] IDENTITY(1,1) NOT NULL,
+	[userId] [int] IDENTITY(1,1) NOT NULL,
 	[email] [nvarchar](254) NOT NULL,
 	[passwordHash] [nvarchar](300) NULL,
  CONSTRAINT [PK_UserAuth] PRIMARY KEY CLUSTERED 
 (
-	[id] ASC
+	[userId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
  CONSTRAINT [UniqueEmail_UserAuth] UNIQUE NONCLUSTERED 
 (
@@ -237,7 +237,7 @@ CREATE TABLE [dbo].[UserAuth](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -257,158 +257,151 @@ CREATE TABLE [dbo].[Users](
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [emailIndex_UserAuth]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  Index [emailIndex_UserAuth]    Script Date: 20/02/2020 4:06:15 PM ******/
 CREATE NONCLUSTERED INDEX [emailIndex_UserAuth] ON [dbo].[UserAuth]
 (
 	[email] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[Comments]  WITH CHECK ADD  CONSTRAINT [FK_Comments_Posts] FOREIGN KEY([PostId])
-REFERENCES [dbo].[Posts] ([PostId])
+ALTER TABLE [dbo].[Comments]  WITH CHECK ADD  CONSTRAINT [FK_Comments_Posts] FOREIGN KEY([postId])
+REFERENCES [dbo].[Posts] ([postId])
 GO
 ALTER TABLE [dbo].[Comments] CHECK CONSTRAINT [FK_Comments_Posts]
 GO
-ALTER TABLE [dbo].[Comments]  WITH CHECK ADD  CONSTRAINT [FK_Comments_Users] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[Comments]  WITH CHECK ADD  CONSTRAINT [FK_Comments_Users] FOREIGN KEY([creatorId])
 REFERENCES [dbo].[Users] ([userId])
 GO
 ALTER TABLE [dbo].[Comments] CHECK CONSTRAINT [FK_Comments_Users]
 GO
-ALTER TABLE [dbo].[CommentsTags]  WITH CHECK ADD  CONSTRAINT [FK_CommentsTags_Comments] FOREIGN KEY([CommentId])
-REFERENCES [dbo].[Comments] ([CommentId])
+ALTER TABLE [dbo].[CommentsTags]  WITH CHECK ADD  CONSTRAINT [FK_CommentsTags_Comments] FOREIGN KEY([commentId])
+REFERENCES [dbo].[Comments] ([commentId])
 GO
 ALTER TABLE [dbo].[CommentsTags] CHECK CONSTRAINT [FK_CommentsTags_Comments]
 GO
-ALTER TABLE [dbo].[CommentsTags]  WITH CHECK ADD  CONSTRAINT [FK_CommentsTags_Tags] FOREIGN KEY([TagId])
-REFERENCES [dbo].[Tags] ([TagId])
+ALTER TABLE [dbo].[CommentsTags]  WITH CHECK ADD  CONSTRAINT [FK_CommentsTags_Tags] FOREIGN KEY([tagId])
+REFERENCES [dbo].[Tags] ([tagId])
 GO
 ALTER TABLE [dbo].[CommentsTags] CHECK CONSTRAINT [FK_CommentsTags_Tags]
 GO
-ALTER TABLE [dbo].[CommentUserTags]  WITH CHECK ADD  CONSTRAINT [FK_CommentUserTags_Comments] FOREIGN KEY([CommentId])
-REFERENCES [dbo].[Comments] ([CommentId])
+ALTER TABLE [dbo].[CommentUserTags]  WITH CHECK ADD  CONSTRAINT [FK_CommentUserTags_Comments] FOREIGN KEY([commentId])
+REFERENCES [dbo].[Comments] ([commentId])
+ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[CommentUserTags] CHECK CONSTRAINT [FK_CommentUserTags_Comments]
 GO
-ALTER TABLE [dbo].[CommentUserTags]  WITH CHECK ADD  CONSTRAINT [FK_CommentUserTags_Users] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[CommentUserTags]  WITH CHECK ADD  CONSTRAINT [FK_CommentUserTags_Users] FOREIGN KEY([taggedUserId])
 REFERENCES [dbo].[Users] ([userId])
 GO
 ALTER TABLE [dbo].[CommentUserTags] CHECK CONSTRAINT [FK_CommentUserTags_Users]
 GO
-ALTER TABLE [dbo].[Posts]  WITH CHECK ADD  CONSTRAINT [FK_Posts_Users1] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[Posts]  WITH CHECK ADD  CONSTRAINT [FK_Posts_Users1] FOREIGN KEY([creatorId])
 REFERENCES [dbo].[Users] ([userId])
 GO
 ALTER TABLE [dbo].[Posts] CHECK CONSTRAINT [FK_Posts_Users1]
 GO
-ALTER TABLE [dbo].[PostsLikes]  WITH CHECK ADD  CONSTRAINT [FK_PostsLikes_Posts] FOREIGN KEY([PostId])
-REFERENCES [dbo].[Posts] ([PostId])
+ALTER TABLE [dbo].[PostsLikes]  WITH CHECK ADD  CONSTRAINT [FK_PostsLikes_Posts] FOREIGN KEY([postId])
+REFERENCES [dbo].[Posts] ([postId])
 GO
 ALTER TABLE [dbo].[PostsLikes] CHECK CONSTRAINT [FK_PostsLikes_Posts]
 GO
-ALTER TABLE [dbo].[PostsLikes]  WITH CHECK ADD  CONSTRAINT [FK_PostsLikes_Users] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[PostsLikes]  WITH CHECK ADD  CONSTRAINT [FK_PostsLikes_Users] FOREIGN KEY([likedById])
 REFERENCES [dbo].[Users] ([userId])
 GO
 ALTER TABLE [dbo].[PostsLikes] CHECK CONSTRAINT [FK_PostsLikes_Users]
 GO
-ALTER TABLE [dbo].[PostsTags]  WITH CHECK ADD  CONSTRAINT [FK_PostsTags_Posts] FOREIGN KEY([PostId])
-REFERENCES [dbo].[Posts] ([PostId])
+ALTER TABLE [dbo].[PostsTags]  WITH CHECK ADD  CONSTRAINT [FK_PostsTags_Posts] FOREIGN KEY([postId])
+REFERENCES [dbo].[Posts] ([postId])
 GO
 ALTER TABLE [dbo].[PostsTags] CHECK CONSTRAINT [FK_PostsTags_Posts]
 GO
-ALTER TABLE [dbo].[PostsTags]  WITH CHECK ADD  CONSTRAINT [FK_PostsTags_Tags] FOREIGN KEY([TagId])
-REFERENCES [dbo].[Tags] ([TagId])
+ALTER TABLE [dbo].[PostsTags]  WITH CHECK ADD  CONSTRAINT [FK_PostsTags_Tags] FOREIGN KEY([tagId])
+REFERENCES [dbo].[Tags] ([tagId])
 GO
 ALTER TABLE [dbo].[PostsTags] CHECK CONSTRAINT [FK_PostsTags_Tags]
 GO
-ALTER TABLE [dbo].[PostsUserTags]  WITH CHECK ADD  CONSTRAINT [FK_PostsUserTags_Posts] FOREIGN KEY([PostId])
-REFERENCES [dbo].[Posts] ([PostId])
+ALTER TABLE [dbo].[PostsUserTags]  WITH CHECK ADD  CONSTRAINT [FK_PostsUserTags_Posts] FOREIGN KEY([postId])
+REFERENCES [dbo].[Posts] ([postId])
 GO
 ALTER TABLE [dbo].[PostsUserTags] CHECK CONSTRAINT [FK_PostsUserTags_Posts]
 GO
-ALTER TABLE [dbo].[PostsUserTags]  WITH CHECK ADD  CONSTRAINT [FK_PostsUserTags_Users] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[PostsUserTags]  WITH CHECK ADD  CONSTRAINT [FK_PostsUserTags_Users] FOREIGN KEY([taggedUserId])
 REFERENCES [dbo].[Users] ([userId])
 GO
 ALTER TABLE [dbo].[PostsUserTags] CHECK CONSTRAINT [FK_PostsUserTags_Users]
 GO
 ALTER TABLE [dbo].[Users]  WITH NOCHECK ADD  CONSTRAINT [FK_Users_UserAuth1] FOREIGN KEY([userId])
-REFERENCES [dbo].[UserAuth] ([id])
+REFERENCES [dbo].[UserAuth] ([userId])
 GO
 ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK_Users_UserAuth1]
 GO
-/****** Object:  StoredProcedure [dbo].[AddCommentLike]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[AddCommentLike]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[AddCommentLike] 
-	-- Add the parameters for the stored procedure here
+	-- The comment to add like to.
 	@commentId int, 
-	@userId int
+
+	-- that user that liked the comment
+	@likedById int
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-
-insert into [dbo].[CommentsLikes] (CommentId, UserId)
-      values (@commentId, @userId)
+insert into [dbo].[CommentsLikes] (commentId, likedById)
+      values (@commentId, @likedById)
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[AddPostLike]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[AddPostLike]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[AddPostLike] 
-	-- Add the parameters for the stored procedure here
+	-- the post to add a like to.
 	@postId int, 
-	@userId int
+
+	-- the user that liked the post
+	@likedById int
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
+
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-
-insert into [dbo].[PostsLikes] (PostId, UserId)
-      values (@postId, @userId)
+insert into [dbo].[PostsLikes] (postId, likedById)
+      values (@postId, @likedById)
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreateAuthUser]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[CreateAuthUser]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[CreateAuthUser] 
-	-- Add the parameters for the stored procedure here
+	-- The email of the user. it should be unique.
 	@email nvarchar(254), 
+
+	-- password hashed using bcrypt. should be hashed before.
 	@passwordHash nvarchar(300),
+
 	@userId int output
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
+
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
 INSERT INTO [dbo].[UserAuth]
            ([email]
            ,[passwordHash])
@@ -416,160 +409,183 @@ INSERT INTO [dbo].[UserAuth]
            (@email,
            @passwordHash)
 
+	-- returns the id of the created user.
 	set @userId = scope_identity()
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreateComment]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[CreateComment]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
+-- Author: Ofer
 -- =============================================
 CREATE PROCEDURE [dbo].[CreateComment] 
-	-- Add the parameters for the stored procedure here
-	@text nvarchar(500) = null,
+
+	-- the id of the post that the comment belongs to.
 	@postId int,
+
+	-- the user that added the comment
 	@creatorId int,
+
+	-- the time the comment was published.
 	@publishDate datetime,
+
+	-- the text of the comment
+	@text nvarchar(500) = null,
+
+	-- the user that are tagged as part of the comment.
+	-- should be an json array [1,2,3]
 	@userTags nvarchar(1000) = null,
+
+	-- the tags of the comment.
+	-- should be an json array of strings - ["alpha","bravo"]
 	@tags nvarchar(1000) = null,
+
 	@commentId int output
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
+
 	SET NOCOUNT ON;
 
-INSERT INTO [dbo].[Comments]
-           ([Text],
-           [PostId],
-		   [publishDate],
-           [UserId])
-     VALUES
-           (@text,
-           @postId,
-		   @publishDate,
-           @creatorId)
+	-- inserting the comment itself.
+	INSERT INTO [dbo].[Comments]
+	           ([text],
+	           [postId],
+			   [publishDate],
+	           creatorId)
+	     VALUES
+	           (@text,
+	           @postId,
+			   @publishDate,
+	           @creatorId)
 
 	set @commentId = SCOPE_IDENTITY()
 
-    -- Insert statements for procedure here
-	INSERT INTO [dbo].[CommentUserTags] ([CommentId],[UserId])
-	SELECT @commentId, j.value from openjson(@userTags) as j
+	-- inserting the user tags of the comment
+	INSERT INTO [dbo].[CommentUserTags] ([commentId],[taggedUserId])
+		SELECT @commentId, j.value from openjson(@userTags) as j
 
-	INSERT INTO [dbo].[Tags] ([Name])
-	select value from openjson(@tags)
-	where value not in (select Name from [dbo].Tags)
+	-- adding the tags that dont exist into the tags table.
+	INSERT INTO [dbo].[Tags] ([tagName])
+		select value from openjson(@tags)
+		where value not in (select tagName from [dbo].[Tags])
 
-	insert into [dbo].[CommentsTags] (CommentId, TagId)
-	select @commentId, TagId from Tags
-	where Name in (select value from openjson(@tags))
+	-- inseting the comment tags
+	insert into [dbo].[CommentsTags] ([commentId], [tagId])
+		select @commentId, [tagId] from Tags
+		where tagName in (select value from openjson(@tags))
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreatePost]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[CreatePost]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[CreatePost] 
-	-- Add the parameters for the stored procedure here
-	@Image nvarchar(100), 
-	@Text nvarchar(500) = null,
-	@Lng float,
-	@Lat float,
-	@PublishDate nvarchar(50),
-	@UserId int,
-	@tags nvarchar(4000),
-	@userTags nvarchar(4000),
-	@PostId int output
 
-	--SELECT value FROM OPENJSON( CHAR(91) + @List + CHAR(93))
-	--vs
-	--SELECT value FROM STRING_SPLIT(@List, @Delimiter)
-	--vs
-	--TVP
+	-- the uuid used to obtain the image.
+	@imageUuid nvarchar(100), 
+
+	-- the id of the user that created the post
+	@creatorId int,
+
+	-- the location of the post
+	@lng float,
+	@lat float,
+
+	-- the post publish date
+	@publishDate datetime,
+
+	-- the text content of the post
+	@text nvarchar(500) = null,
+
+
+	-- the tags of the post.
+	-- should be an json array of strings - ["alpha","bravo"]
+	@tags nvarchar(4000),
+
+	-- the user that are tagged as part of the post.
+	-- should be an json array [1,2,3]
+	@userTags nvarchar(4000),
+
+	@postId int output
+
 
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	DECLARE 
-	@location AS geography = geography::Point(@Lat,@Lng, 4326)
+
+	--create the geography object of the location.
+	DECLARE @location AS geography = geography::Point(@Lat,@Lng, 4326)
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-
+	-- inserting the post itself
 	INSERT INTO [dbo].[Posts]
            ([Text]
-           ,[Image]
+           ,[imageUuid]
            ,[Location]
            ,[PublishDate]
-           ,[UserId])
+           ,[creatorId])
     VALUES
-           (@Text
-           ,@Image
-           ,@Location
-           ,@PublishDate
-           ,@UserId)
+           (@text
+           ,@imageUuid
+           ,@location
+           ,@publishDate
+           ,@creatorId)
 
 
 	set @PostId = SCOPE_IDENTITY()
 
-	INSERT INTO [dbo].[PostsUserTags] ([PostId],[UserId])
-	SELECT @PostId, j.value from openjson(@userTags) as j
+	-- inserting the post tagged users
+	INSERT INTO [dbo].[PostsUserTags] ([postId],[taggedUserId])
+	SELECT @postId, j.value from openjson(@userTags) as j
 
-	INSERT INTO [dbo].[Tags] ([Name])
+	-- inserting the tags that doesnt exist in the tags table
+	INSERT INTO [dbo].[Tags] ([tagName])
 	select value from openjson(@tags)
-	where value not in (select Name from [dbo].Tags)
+	where value not in (select [tagName] from [dbo].Tags)
 
-	insert into [dbo].[PostsTags] (PostId, TagId)
-	select @PostId, TagId from Tags
-	where Name in (select value from openjson(@tags))
-
-
+	-- inserting the post tags
+	insert into [dbo].[PostsTags] ([postId], [tagId])
+	select @postId, [tagId] from [Tags]
+	where [tagName] in (select value from openjson(@tags))
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreateUser]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[CreateUser]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[CreateUser] 
-	-- Add the parameters for the stored procedure here
-	@FirstName nvarchar(50), 
-	@LastName nvarchar(50),
-	@Address nvarchar(200),
-	@WorkPlace nvarchar(100),
-	@BirthDate date,
+	@firstName nvarchar(50), 
+	@lastName nvarchar(50),
+	@address nvarchar(200),
+	@workPlace nvarchar(100),
+	@birthDate date,
 	@userId int
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
 	insert into Users
-	values(@userId,@FirstName,@LastName,@Address,@WorkPlace,@BirthDate)
+	values (@userId,
+			@FirstName,
+			@LastName,
+			@Address,
+			@WorkPlace,
+			@BirthDate)
 END
 GO
-/****** Object:  StoredProcedure [dbo].[DeleteAuthUser]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAuthUser]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -584,121 +600,98 @@ CREATE PROCEDURE [dbo].[DeleteAuthUser]
 	@authId int
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
 DELETE FROM [dbo].[UserAuth]
-      WHERE id = @authId
-
+      WHERE [userId] = @authId
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[DeleteCommentLike]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[DeleteCommentLike]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[DeleteCommentLike] 
-	-- Add the parameters for the stored procedure here
 	@commentId int, 
-	@userId int
+	@likedById int
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
+
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
 
 DELETE FROM [dbo].[CommentsLikes]
-      WHERE CommentId = @commentId and UserId = @userId;
+      WHERE [commentId] = @commentId and [likedById] = @likedById;
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[DeletePostLike]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[DeletePostLike]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[DeletePostLike] 
-	-- Add the parameters for the stored procedure here
+
 	@postId int, 
-	@userId int
+	@likedById int
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
+
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
 
 DELETE FROM [dbo].[PostsLikes]
-      WHERE PostId = @postId and UserId = @userId;
+      WHERE PostId = @postId and [likedById] = @likedById;
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetAllUsers]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[GetAllUsers]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[GetAllUsers] 
-	-- Add the parameters for the stored procedure here
 
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-	select firstName, lastName, users.UserId as userId
-	from Users
+	select [firstName], [lastName], [Users].[userId]
+	from [Users]
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetAuthUserByEmail]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[GetAuthUserByEmail]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
+-- Author:		Ofer
 -- =============================================
 CREATE PROCEDURE [dbo].[GetAuthUserByEmail] 
-	-- Add the parameters for the stored procedure here
 	@email nvarchar(254)
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
+
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
 	SELECT *
 	from UserAuth
 	where email = @email
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetCommentbyId]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[GetCommentbyId]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -719,91 +712,104 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	SELECT Text [text], publishDate ,Users.UserId [creator.userId], FirstName [creator.firstName], LastName [creator.lastName], 
-		(select count(*) from CommentsLikes where CommentsLikes.CommentId = Comments.CommentId) as [likesCount],
-		(select firstName, LastName, users.userId 
-			from CommentUserTags join Users on CommentUserTags.CommentId = Comments.CommentId 
-				and CommentUserTags.UserId = Users.UserId for json auto) as userTags,
-		(select tags.tagId, name from CommentsTags join tags 
-			on CommentsTags.CommentId = Comments.CommentId and CommentsTags.TagId = Tags.TagId for json auto) as [tags],
-	likedByUser = case when @likedById in (select UserId from CommentsLikes where CommentId = @commentId) then 1 else 0 end
+	SELECT [commentId], [postId], [text], [publishDate], [Users].[userId] as [creator.userId],
+			 [firstName] as [creator.firstName], lastName as [creator.lastName], 
 
-	from Comments join Users on Comments.UserId = Users.UserId
-	where CommentId = @commentId
+		(select count(*) 
+			from [CommentsLikes] 
+			where [CommentsLikes].[commentId] = [Comments].[commentId]) as [likes],
+
+		(select [firstName], [lastName], [users].[userId] 
+			from [CommentUserTags] join [Users] on [CommentUserTags].[commentId] = [Comments].[commentId]
+			and [CommentUserTags].[taggedUserId] = [Users].[userId] for json auto) as [userTags],
+
+		(select [tags].[tagId] as [id], [tagName] as [name] from [CommentsTags] join [Tags] 
+			on [CommentsTags].[commentId] = [Comments].[commentId]
+			and [CommentsTags].[tagId] = [Tags].[tagId] for json auto) as [tags],
+
+	likedByUser = case when @likedById in (select [userId] from [CommentsLikes] 
+											where [commentId] = @commentId) then 1 else 0 end
+
+	from [Comments] join [Users] on [Comments].[creatorId] = [Users].[userId]
+	where [commentId] = @commentId
 	for json path
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetCommentsByPostId]    Script Date: 15/02/2020 19:32:12 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
--- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
-CREATE PROCEDURE [dbo].[GetCommentsByPostId] 
-	-- Add the parameters for the stored procedure here
-	@postId int,
-	@likedById int = null
-AS
-BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
-
-    -- Insert statements for procedure here
-	SELECT Text [text],publishDate , Users.UserId [creator.userId], FirstName [creator.firstName], LastName [creator.lastName], 
-		(select count(*) from CommentsLikes where CommentsLikes.CommentId = Comments.CommentId) as [likesCount],
-		(select firstName, lastName, users.userId 
-			from CommentUserTags join Users on CommentUserTags.CommentId = Comments.CommentId 
-				and CommentUserTags.UserId = Users.UserId for json auto) as userTags,
-		(select tags.tagId, name from CommentsTags join tags 
-			on CommentsTags.CommentId = Comments.CommentId and CommentsTags.TagId = Tags.TagId for json auto) as [tags],
-			likedByUser = case when @likedById in (select UserId from CommentsLikes where CommentId = Comments.CommentId) then 1 else 0 end
-	from Comments join Users on Comments.UserId = Users.UserId
-	where PostId = @postId
-	for json path
-END
-GO
-/****** Object:  StoredProcedure [dbo].[GetPostById]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[GetCommentsByPostId]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
-CREATE PROCEDURE [dbo].[GetPostById] 
-	-- Add the parameters for the stored procedure here
-	@PostId int,
+CREATE PROCEDURE [dbo].[GetCommentsByPostId] 
+	@postId int,
 	@likedById int = null
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
+
 	SET NOCOUNT ON;
 
-	SELECT Posts.Text [text], Posts.Image [image],  Posts.Location.Long as [location.lng], Posts.Location.Lat as [location.lat], Posts.PostId [postId], Posts.PublishDate [publishDate],
-	(select UserId as userId, firstName as firstName, LastName as lastName from Users where UserId = Posts.UserId for json auto) as [owner],
-	--(select Users.UserId as userId, FirstName as firstName, LastName as lastName 
-	--from PostsLikes join Users on PostsLikes.UserId = Users.UserId
-	--where PostId = @PostId for json auto) as [Likes],
-	(select count(*) from PostsLikes where PostId = @PostId) as [likes],
-		(select Tags.Name as name, Tags.TagId as id
-	from PostsTags join Tags on PostsTags.TagId = Tags.TagId
-	where PostId = @PostId
-	for json auto) as [tags],
+	SELECT [commentId], @postId as [postId], [text],[publishDate] ,
+			Users.UserId as [creator.userId], firstName as [creator.firstName], lastName as [creator.lastName],
 
-	(select Users.UserId as id, firstName, lastName 
-	from PostsUserTags join Users on PostsUserTags.UserId = Users.UserId
-	where PostId = @PostId
+		(select count(*) 
+			from [CommentsLikes] 
+			where [CommentsLikes].[commentId] = [Comments].[commentId]) as [likes],
+
+		(select [firstName], [lastName], [users].[userId] 
+			from [CommentUserTags] join [Users] on [CommentUserTags].[commentId] = [Comments].[commentId] 
+			and [CommentUserTags].[taggedUserId] = [Users].[userId] for json auto) as [userTags],
+
+		(select [Tags].[tagId] as [id], [tagName] as [name] from [CommentsTags] join [Tags] 
+			on [CommentsTags].[commentId] = [Comments].[commentId] 
+			and [CommentsTags].[tagId] = [Tags].[tagId] for json auto) as [tags],
+
+		likedByUser = case when @likedById in (select [userId] from 
+			[CommentsLikes] where [commentId] = [Comments].[commentId]) then 1 else 0 end
+
+	from [Comments] join [Users] on [Comments].[creatorId] = [Users].[userId]
+	where [postId] = @postId
+	for json path
+END
+GO
+/****** Object:  StoredProcedure [dbo].[GetPostById]    Script Date: 20/02/2020 4:06:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Ofer
+-- =============================================
+CREATE PROCEDURE [dbo].[GetPostById] 
+	@postId int,
+	@likedById int = null
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	SELECT [Posts].[text], [Posts].[imageUuid],  [Posts].[location].Long as [location.lng],
+		 [Posts].[location].Lat as [location.lat], [Posts].[postId], [Posts].[publishDate],
+
+	(select [userId], [firstName], [lastName] from [Users] 
+		where [userId] = [Posts].[creatorId] for json auto) as [creator],
+
+	(select count(*) from [PostsLikes] where [postId] = @postId) as [likes],
+	(select [Tags].[tagName] as [name], [Tags].[tagId] as [id]
+		from [PostsTags] join [Tags] on [PostsTags].[tagId] = [Tags].[tagId]
+		where [postId] = @postId
+		for json auto) as [Tags],
+
+	(select [Users].[userId] as [id], [firstName], [lastName]
+	from [PostsUserTags] join [Users] on [PostsUserTags].[taggedUserId] = [Users].[userId]
+	where [postId] = @postId
 	for json auto) as [userTags],
 
-	likedByUser = case when @likedById in (select UserId from PostsLikes where PostId = @PostId) then 1 else 0 end
+	likedByUser = case when @likedById in 
+		(select [likedById] from [PostsLikes] where [postId] = @postId) then 1 else 0 end
+
 	from Posts
 	where PostId = @PostId
 	for json path
@@ -811,15 +817,13 @@ BEGIN
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetPosts]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[GetPosts]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[GetPosts] 
 	-- Add the parameters for the stored procedure here
@@ -831,44 +835,44 @@ CREATE PROCEDURE [dbo].[GetPosts]
 	@tags nvarchar(4000) = null,
 	@userTags nvarchar(4000) = null,
 	@publishers nvarchar(4000) = null,
-	@orderBy nvarchar(50) = null
+	@orderBy nvarchar(50) = null,
+	@likedById int = null
 AS
 BEGIN
 	declare @postIdTable TABLE ([postId] varchar(50))
 
-	-- create the location params
+	-- create the location variable
 	IF @lng is not null
 	BEGIN
-    -- Insert statements for procedure here
 		DECLARE @location AS geography = geography::Point(@lat, @lng, 4326)
 		DECLARE @range AS geography = @location.STBuffer(@distance)
 	END
 
 	insert into @postIdTable
-	select Posts.PostId
+	select [Posts].[postId]
 	from Posts 
-	where (@lng is null or Posts.Location.STIntersects(@Range) = 1)
-		and (@startDate is null or Posts.PublishDate >= @startDate)
-		and (@endDate is null or Posts.PublishDate < @endDate)
-		and (@publishers is null or Posts.UserId in (select value from openjson(@publishers)))
+	where (@lng is null or [Posts].[location].STIntersects(@Range) = 1)
+		and (@startDate is null or [Posts].[publishDate] >= @startDate)
+		and (@endDate is null or [Posts].[publishDate] < @endDate)
+		and (@publishers is null or [Posts].[creatorId] in (select value from openjson(@publishers)))
 
 	-- filter by tags
 	if @tags is not null
 	begin
-		DECLARE @tmpTagsTable TABLE ([Name] varchar(50))
+		DECLARE @tmpTagsTable TABLE ([name] varchar(50))
 		insert into @tmpTagsTable
 		select value from openjson(@tags);
 
 		delete from @postIdTable
-		where postId not in (
-			select PostId
-				from Tags join PostsTags on Tags.TagId = PostsTags.TagId
-				where tags.Name in (select * from @tmpTagsTable)
+		where [postId] not in (
+			select [postId]
+				from [Tags] join [PostsTags] on [Tags].[tagId] = [PostsTags].[tagId]
+				where [tags].[tagName] in (select * from @tmpTagsTable)
 			union
-				select PostId
-				from Tags join CommentsTags on tags.TagId = CommentsTags.TagId
-					join Comments on CommentsTags.CommentId = Comments.CommentId
-				where tags.Name in (select * from @tmpTagsTable))
+				select [postId]
+				from [Tags] join [CommentsTags] on [tags].[tagId] = [CommentsTags].[tagId]
+					join [Comments] on [CommentsTags].[commentId] = [Comments].[commentId]
+				where [tags].[tagName] in (select * from @tmpTagsTable))
 	end
 
 	-- filter by user tags
@@ -879,32 +883,43 @@ BEGIN
         select value from openjson(@userTags);
 
 		delete from @postIdTable
-		where postId not in (
-			select PostId
-				from PostsUserTags
-				where PostsUserTags.UserId in (select * from @tmpUserTagsTable)
+		where [postId] not in (
+			select [postId]
+				from [PostsUserTags]
+				where [PostsUserTags].[taggedUserId] in (select * from @tmpUserTagsTable)
 			union
-			select PostId
-				from CommentUserTags join Comments on CommentUserTags.CommentId = Comments.CommentId
-				where CommentUserTags.UserId in (select * from @tmpTagsTable))
+			select [postId]
+				from [CommentUserTags] join [Comments] on [CommentUserTags].[commentId] = [Comments].[commentId]
+				where [CommentUserTags].[taggedUserId] in (select * from @tmpTagsTable))
 	end
 
-	select Posts.PostId, Posts.Image, Posts.Location.Long as Lng, Posts.Location.Lat as Lat, posts.PublishDate,
-		Posts.Text, Users.UserId, Users.FirstName + ' ' + Users.LastName as UserFullName, count(PostsLikes.UserId) as PostLikes
-	from Posts join Users on Posts.UserId = Users.UserId 
-		left join PostsLikes on PostsLikes.PostId = Posts.PostId
-	where Posts.PostId in (select * from @postIdTable)
-	group by Posts.PostId, Posts.Image, Posts.Location.Long, Posts.Location.Lat, posts.PublishDate,
-		Posts.Text, Users.UserId, Users.FirstName + ' ' + Users.LastName
+
+	select [Posts].[postId], [Posts].[imageUuid], [Posts].[location].Long as [location.lng],
+		[Posts].[location].Lat as [location.lat], [publishDate],
+		[text], [userid] as [creator.id], [Users].[firstName] as [creator.firstName],
+		[Users].[lastName] as [creator.lastName], count([PostsLikes].[likedById]) as [likes],
+
+		likedByUser = case when @likedById in 
+			(select [userId] from [PostsLikes] where [postId] = [Posts].[postId]) then 1 else 0 end
+
+	from [Posts] join [Users] on [Posts].[creatorId] = [Users].[userId] 
+		left join [PostsLikes] on [PostsLikes].[postId] = [Posts].[postId]
+
+	where [Posts].[postId] in (select * from @postIdTable)
+
+	group by [Posts].[postId], [Posts].[imageUuid], [Posts].[location].Long,
+	[Posts].[location].Lat, [posts].[publishDate],
+		[text], [Users].[userId], [Users].[firstName], [Users].[lastName]
 	order by
-		case when @orderBy is null then Posts.PostId
-		when @orderBy = 'date' then Posts.PublishDate 
-		when @orderBy = 'likes' then (select count(UserId) from PostsLikes where PostsLikes.PostId = Posts.PostId)
+		case when @orderBy is null then [Posts].[postId]
+		when @orderBy = 'date' then [Posts].[publishDate]
+		when @orderBy = 'likes' then (select count([likedById]) 
+			from [PostsLikes] where [PostsLikes].[postId] = [Posts].[postId])
 	end desc
+	for json path
 END
---openjson(@userTags) as j
 GO
-/****** Object:  StoredProcedure [dbo].[GetTags]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[GetTags]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -914,7 +929,7 @@ GO
 -- Create date: 
 -- Description:	
 -- =============================================
-create PROCEDURE [dbo].[GetTags] 
+CREATE PROCEDURE [dbo].[GetTags] 
 	-- Add the parameters for the stored procedure here
 @filter NVARCHAR(50) = null
 AS
@@ -924,13 +939,13 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	select TagId as tagId, Name as name
+	select [tagId], [tagName] as [name]
 	from Tags
-	where (@filter is null) or charindex(upper(@filter) ,upper(Name)) > 0
+	where (@filter is null) or charindex(upper(@filter) ,upper([tagName])) > 0
 	
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -941,43 +956,33 @@ GO
 -- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[GetUserById] 
-	-- Add the parameters for the stored procedure here
-	@UserId int
+	@userId int
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
 	SELECT *
 	from Users
 	where UserId = @UserId
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetUsers]    Script Date: 15/02/2020 19:32:12 ******/
+/****** Object:  StoredProcedure [dbo].[GetUsers]    Script Date: 20/02/2020 4:06:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 -- =============================================
 -- Author:		Ofer
--- Create date: 
--- Description:	
 -- =============================================
 CREATE PROCEDURE [dbo].[GetUsers] 
-	-- Add the parameters for the stored procedure here
 @filter NVARCHAR(50) = null
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-	select firstName, lastName, users.UserId as userId
+	select [firstName], [lastName], [users].[userId]
 	from Users
-	where (@filter is null) or charindex(upper(@filter) ,upper(Users.FirstName + ' ' + Users.LastName)) > 0
+	where (@filter is null) or charindex(upper(@filter) ,upper(Users.firstName + ' ' + Users.lastName)) > 0
 	
 END
 GO

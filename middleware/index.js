@@ -18,7 +18,7 @@ const errorLogger = expressWinston.errorLogger({
     winston.format.prettyPrint(),
     winston.format.timestamp(),
   ),
-  skip: (req, res, err) => err.statusCode < 500,
+  skip: (req, res, err) => err.status < 500,
 });
 
 // handle errors

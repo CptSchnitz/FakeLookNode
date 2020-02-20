@@ -36,8 +36,22 @@ const getCommentById = async (commentId, userId) => {
     .input('likedById', userId)
     .execute('GetCommentById');
   const comment = result.recordset[0][0];
-  comment.likedByUser = !!comment.likedByUser;
   return comment;
 };
 
-module.exports = { getCommentsByPostId, createComment, getCommentById };
+const addCommentLike = async (CommentId, userId) => {
+  const pool = await poolPromise;
+
+  await pool.request()
+    .input('commentId', CommentId).input('likedById', userId).execute('AddCommentLike');
+};
+
+const deleteCommentLike = async (CommentId, userId) => {
+  const pool = await poolPromise;
+
+  await pool.request().input('commentId', CommentId).input('likedById', userId).execute('DeleteCommentLike');
+};
+
+module.exports = {
+  getCommentsByPostId, createComment, getCommentById, addCommentLike, deleteCommentLike,
+};

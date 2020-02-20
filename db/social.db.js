@@ -16,7 +16,7 @@ const getUserById = async (userId) => {
 
   const result = await pool
     .request()
-    .input('UserId', sql.Int, userId)
+    .input('userId', sql.Int, userId)
     .execute('GetUserById');
 
   return result.recordset[0];
@@ -27,11 +27,11 @@ const createUser = async (user) => {
 
   await pool.request()
     .input('userId', user.userId)
-    .input('FirstName', sql.VarChar(50), user.firstName)
-    .input('LastName', sql.VarChar(50), user.lastName)
-    .input('Address', sql.VarChar(200), user.address)
-    .input('WorkPlace', sql.VarChar(100), user.workPlace)
-    .input('BirthDate', sql.Date, user.birthDate)
+    .input('firstName', sql.VarChar(50), user.firstName)
+    .input('lastName', sql.VarChar(50), user.lastName)
+    .input('address', sql.VarChar(200), user.address)
+    .input('workPlace', sql.VarChar(100), user.workPlace)
+    .input('birthDate', sql.Date, user.birthDate)
     .execute('CreateUser');
 };
 

@@ -17,8 +17,34 @@ const createComment = async (req, res, next) => {
 
     res.json(createdComment);
   } catch (err) {
+    if (err.name === 'invalidPostId') {
+      err.status = 400;
+    }
     next(err);
   }
 };
 
-module.exports = { getCommentsByPostId, createComment };
+const addCommentLike = async (req, res, next) => {
+  try {
+    await commentsService.addCommentLike(req.params.commentId, req.user.userId);
+    res.sendStatus(204);
+  } catch (error) {
+    if (error.name === 'badCommentId') {
+      error.status = 400;
+    }
+    next(error);
+  }
+};
+
+const deleteCommentLike = async (req, res, next) => {
+  try {
+    await commentsService.deleteCommentLike(req.params.commentId, req.user.userId);
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getCommentsByPostId, createComment, addCommentLike, deleteCommentLike,
+};

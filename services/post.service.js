@@ -1,35 +1,44 @@
 const postDb = require('../db/post.db');
 const commentsService = require('./comments.service');
+const imageService = require('./images.service');
+
+const changeLikedByToBool = (post) => ({ ...post, likedByUser: !!post.likedByUser });
 
 const getPostById = async (postId, userId) => {
   const post = await postDb.getPostById(postId, userId);
   post.comments = await commentsService.getCommentsByPostId(postId, userId);
-  return post;
+  return changeLikedByToBool(post);
 };
 
-const createPost = async (post) => {
-  const postWithPublishDate = { ...post, publishDate: new Date() };
-  return postDb.createPost(postWithPublishDate);
+const createPost = async (post, imageBuffer) => {
+  const imageUuid = await imageService.saveImage(imageBuffer);
+
+  try {
+    const postWithPublishDate = { ...post, publishDate: new Date(), imageUuid };
+    return postDb.createPost(postWithPublishDate);
+  } catch (err) {
+    await imageService.deleteImages(imageUuid);
+    throw err;
+  }
 };
 
-const getPosts = async (postFilters) => {
-  const posts = await postDb.getPosts(postFilters);
+const getPosts = async (postFilters, userId) => {
+  const posts = await postDb.getPosts(postFilters, userId);
 
-  const formattedPosts = posts.map((post) => ({
-    postId: post.PostId,
-    image: post.Image,
-    publishDate: post.PublishDate,
-    text: post.Text,
-    user: {
-      id: post.UserId,
-      name: post.UserFullName,
-    },
-    likes: post.PostLikes,
-    location: { lng: post.Lng, lat: post.Lat },
-  }));
+  const formattedPosts = posts.map(changeLikedByToBool);
 
   return formattedPosts;
 };
 
+const addPostLike = async (postId, userId) => {
+  await postDb.addPostLike(postId, userId);
+};
 
-module.exports = { getPostById, createPost, getPosts };
+const deletePostLike = async (postId, userId) => {
+  await postDb.deletePostLike(postId, userId);
+};
+
+
+module.exports = {
+  getPostById, createPost, getPosts, addPostLike, deletePostLike,
+};

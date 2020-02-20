@@ -21,15 +21,4 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-// const createUser = async (req, res, next) => {
-//   try {
-//     const user = { ...req.body };
-//     const createdId = await userService.createUser(user);
-//     res.set('Location', `${req.protocol}://${req.get('host')}${req.originalUrl}/${createdId}`);
-//     res.sendStatus(201);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
 module.exports = { getUsers, getUserById };

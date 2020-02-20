@@ -31,17 +31,17 @@ const checkIfEmailUsed = async (email) => {
 
 const login = async (email, password) => {
   const user = await authDb.getUserByEmail(email);
+
   if (!user) {
     throw errors.badEmail();
   }
 
-
   if (!await bcrypt.compare(password, user.passwordHash)) {
     throw errors.badPassword();
   }
-  const idToken = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: `${expireTime}m` });
+  const idToken = jwt.sign({ userId: user.userId }, jwtSecret, { expiresIn: `${expireTime}m` });
 
-  const userDetails = await socialService.getUserById(user.id);
+  const userDetails = await socialService.getUserById(user.userId);
 
   const expiration = addMinutes(new Date(), 30);
 

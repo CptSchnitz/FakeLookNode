@@ -19,7 +19,7 @@ const getPostById = async (postId, userId) => {
   return post;
 };
 
-const getPosts = async (postFilter) => {
+const getPosts = async (postFilter, userId) => {
   const pool = await poolPromise;
   const filter = { ...postFilter };
 
@@ -46,9 +46,10 @@ const getPosts = async (postFilter) => {
     .input('tags', filter.tags)
     .input('publishers', filter.publishers)
     .input('orderBy', filter.orderBy)
+    .input('likedById', userId)
     .execute('GetPosts');
 
-  return result.recordset;
+  return result.recordset[0];
 };
 
 const createPost = async (post) => {
@@ -56,19 +57,33 @@ const createPost = async (post) => {
 
   const result = await pool
     .request()
-    .input('Image', sql.NVarChar(100), post.image)
-    .input('Text', sql.NVarChar(500), post.text)
-    .input('Lng', sql.Float, post.location.lng)
-    .input('Lat', sql.Float, post.location.lat)
-    .input('PublishDate', post.publishDate.toISOString().slice(0, -5))
-    .input('UserId', sql.Int, post.userId)
+    .input('imageUuid', sql.NVarChar(100), post.imageUuid)
+    .input('text', sql.NVarChar(500), post.text)
+    .input('lng', sql.Float, post.location.lng)
+    .input('lat', sql.Float, post.location.lat)
+    .input('publishDate', post.publishDate.toISOString().slice(0, -5))
+    .input('creatorId', sql.Int, post.creatorId)
     .input('tags', sql.NVarChar(4000), JSON.stringify(post.tags))
     .input('userTags', sql.NVarChar(4000), JSON.stringify(post.userTags))
-    .output('PostId', sql.Int)
+    .output('postId', sql.Int)
     .execute('CreatePost');
 
-  return result.output.PostId;
+  return result.output.postId;
+};
+
+const addPostLike = async (postId, userId) => {
+  const pool = await poolPromise;
+
+  await pool.request().input('postId', postId).input('likedById', userId).execute('AddPostLike');
+};
+
+const deletePostLike = async (postId, userId) => {
+  const pool = await poolPromise;
+
+  await pool.request().input('postId', postId).input('likedById', userId).execute('DeletePostLike');
 };
 
 
-module.exports = { getPostById, createPost, getPosts };
+module.exports = {
+  getPostById, createPost, getPosts, deletePostLike, addPostLike,
+};

@@ -1,9 +1,10 @@
 const postService = require('./../services/post.service');
-const imageService = require('./../services/images.service');
+
+const allowedMimes = ['image/jpeg', 'image/png'];
 
 const getPosts = async (req, res, next) => {
   try {
-    const result = await postService.getPosts(req.query);
+    const result = await postService.getPosts(req.query, req.user.userId);
     res.json(result);
   } catch (err) {
     next(err);
@@ -13,7 +14,6 @@ const getPosts = async (req, res, next) => {
 const getPostById = async (req, res, next) => {
   try {
     const result = await postService.getPostById(req.params.postId, req.user.userId);
-    result.likedByUser = !!result.likedByUser;
     res.json(result);
   } catch (err) {
     next(err);
@@ -21,15 +21,14 @@ const getPostById = async (req, res, next) => {
 };
 
 const createPost = async (req, res, next) => {
-  const allowedMimes = ['image/jpeg', 'image/png'];
   if (!allowedMimes.includes(req.file.mimetype)) {
-    next(new Error('Unsupported File Type'));
+    const error = new Error('Unsupported File Type');
+    error.status = 400;
+    next(error);
   }
   try {
-    const image = await imageService.saveImage(req.file.buffer);
-
-    const post = { ...req.body, userId: req.user.userId, image };
-    const createdId = await postService.createPost(post);
+    const post = { ...req.body, creatorId: req.user.userId };
+    const createdId = await postService.createPost(post, req.file.buffer);
 
     res.set('Location', `${req.protocol}://${req.get('host')}${req.originalUrl}/${createdId}`);
     res.status(201).send({ message: 'created', postId: createdId });
@@ -38,5 +37,25 @@ const createPost = async (req, res, next) => {
   }
 };
 
+const addPostLike = async (req, res, next) => {
+  try {
+    await postService.addPostLike(req.params.postId, req.user.userId);
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+};
 
-module.exports = { getPosts, getPostById, createPost };
+const deletePostLike = async (req, res, next) => {
+  try {
+    await postService.deletePostLike(req.params.postId, req.user.userId);
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+module.exports = {
+  getPosts, getPostById, createPost, addPostLike, deletePostLike,
+};
