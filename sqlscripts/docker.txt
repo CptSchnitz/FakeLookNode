@@ -1,0 +1,5 @@
+docker build -t sql-test .
+docker run -p 1433:1433 --network my-net --name sql -d sql-test
+
+docker build -t fakelook-backend .
+docker run -p 4000:4000 --network my-net --name node -d fakelook-backend 

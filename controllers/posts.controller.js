@@ -1,4 +1,5 @@
 const postService = require('./../services/post.service');
+const { isSpecificError, errors } = require('../utils/errorManager');
 
 const allowedMimes = ['image/jpeg', 'image/png'];
 
@@ -16,6 +17,9 @@ const getPostById = async (req, res, next) => {
     const result = await postService.getPostById(req.params.postId, req.user.userId);
     res.json(result);
   } catch (err) {
+    if (isSpecificError(err, errors.postDoesntExist)) {
+      err.status = 404;
+    }
     next(err);
   }
 };
@@ -42,6 +46,9 @@ const addPostLike = async (req, res, next) => {
     await postService.addPostLike(req.params.postId, req.user.userId);
     res.sendStatus(204);
   } catch (error) {
+    if (isSpecificError(error, errors.postDoesntExist)) {
+      error.status = 404;
+    }
     next(error);
   }
 };
@@ -51,6 +58,9 @@ const deletePostLike = async (req, res, next) => {
     await postService.deletePostLike(req.params.postId, req.user.userId);
     res.sendStatus(204);
   } catch (error) {
+    if (isSpecificError(error, errors.postDoesntExist)) {
+      error.status = 404;
+    }
     next(error);
   }
 };

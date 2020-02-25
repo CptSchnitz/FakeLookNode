@@ -1,4 +1,6 @@
 const authService = require('./../services/auth.service');
+const { isSpecificError, errors } = require('../utils/errorManager');
+
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -8,7 +10,7 @@ const login = async (req, res, next) => {
 
     res.json(loginData);
   } catch (error) {
-    if (error.name === 'badEmail' || error.name === 'badPassword') {
+    if (isSpecificError(error, errors.badEmail) || isSpecificError(error, errors.badPassword)) {
       const err = new Error('Bad email or password.');
       err.status = 401;
       next(err);
@@ -25,7 +27,7 @@ const register = async (req, res, next) => {
     const userId = await authService.createUser(user);
     res.status(201).json({ userId });
   } catch (error) {
-    if (error.name === 'badEmail') {
+    if (isSpecificError(error, errors.badEmail)) {
       error.status = 400;
     }
     next(error);

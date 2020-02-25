@@ -4,24 +4,11 @@ const config = require('config');
 const addMinutes = require('date-fns/addMinutes');
 const authDb = require('./../db/auth.db');
 const socialService = require('./social.service');
+const { errorFactory, errors } = require('../utils/errorManager');
 
 // jwt token expiration time in minutes (mb move to config?)
 const expireTime = 30;
 const jwtSecret = config.get('server.secret');
-
-
-const errors = {
-  badEmail: () => {
-    const error = new Error();
-    error.name = 'badEmail';
-    return error;
-  },
-  badPassword: () => {
-    const error = new Error();
-    error.name = 'badPassword';
-    return error;
-  },
-};
 
 const checkIfEmailUsed = async (email) => {
   const user = await authDb.getUserByEmail(email);
@@ -33,11 +20,11 @@ const login = async (email, password) => {
   const user = await authDb.getUserByEmail(email);
 
   if (!user) {
-    throw errors.badEmail();
+    throw errorFactory(errors.badEmail, 'the email was not found');
   }
 
   if (!await bcrypt.compare(password, user.passwordHash)) {
-    throw errors.badPassword();
+    throw errorFactory(errors.badPassword, 'the password is incorrect');
   }
   const idToken = jwt.sign({ userId: user.userId }, jwtSecret, { expiresIn: `${expireTime}m` });
 
@@ -57,7 +44,7 @@ const login = async (email, password) => {
 const createUser = async (user) => {
   const { email, password, ...userDetails } = { ...user };
   if (await checkIfEmailUsed(email)) {
-    throw errors.badEmail();
+    throw errorFactory(errors.badEmail, 'the email is already used');
   }
 
   const hash = await bcrypt.hash(password, 10);

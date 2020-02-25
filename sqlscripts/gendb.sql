@@ -1,12 +1,16 @@
 USE [master]
 GO
+
+CREATE ROLE db_executor
+
+/* GRANT EXECUTE TO THE ROLE */
+GRANT EXECUTE TO db_executor
+
+GO
+
+create login ofer with password = 'Password1234'
 /****** Object:  Database [FakeLook]    Script Date: 20/02/2020 4:06:13 PM ******/
 CREATE DATABASE [FakeLook]
- CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'FakeLook', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\FakeLook.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
- LOG ON 
-( NAME = N'FakeLook_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\DATA\FakeLook_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
 GO
 ALTER DATABASE [FakeLook] SET COMPATIBILITY_LEVEL = 140
 GO
@@ -78,6 +82,14 @@ GO
 ALTER DATABASE [FakeLook] SET QUERY_STORE = OFF
 GO
 USE [FakeLook]
+GO
+
+CREATE USER ofer FOR LOGIN ofer;
+
+GO
+
+GRANT EXECUTE TO ofer
+
 GO
 /****** Object:  Table [dbo].[Comments]    Script Date: 20/02/2020 4:06:14 PM ******/
 SET ANSI_NULLS ON

@@ -1,4 +1,6 @@
 const commentsService = require('./../services/comments.service');
+const { isSpecificError, errors } = require('../utils/errorManager');
+
 
 const getCommentsByPostId = async (req, res, next) => {
   try {
@@ -17,7 +19,7 @@ const createComment = async (req, res, next) => {
 
     res.json(createdComment);
   } catch (err) {
-    if (err.name === 'invalidPostId') {
+    if (isSpecificError(err, errors.postDoesntExist)) {
       err.status = 400;
     }
     next(err);
@@ -29,7 +31,7 @@ const addCommentLike = async (req, res, next) => {
     await commentsService.addCommentLike(req.params.commentId, req.user.userId);
     res.sendStatus(204);
   } catch (error) {
-    if (error.name === 'badCommentId') {
+    if (isSpecificError(error, errors.commentDoesntExist)) {
       error.status = 400;
     }
     next(error);
@@ -41,6 +43,9 @@ const deleteCommentLike = async (req, res, next) => {
     await commentsService.deleteCommentLike(req.params.commentId, req.user.userId);
     res.sendStatus(204);
   } catch (error) {
+    if (isSpecificError(error, errors.commentDoesntExist)) {
+      error.status = 400;
+    }
     next(error);
   }
 };

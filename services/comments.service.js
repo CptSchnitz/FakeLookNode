@@ -1,5 +1,7 @@
 const commentsDb = require('./../db/comment.db');
 const postsDb = require('./../db/post.db');
+const { errorFactory, errors } = require('../utils/errorManager');
+
 
 const commentFormatter = (comment) => {
   const newComment = { ...comment };
@@ -13,6 +15,7 @@ const commentFormatter = (comment) => {
   return newComment;
 };
 
+
 const getCommentsByPostId = async (postId, userId) => {
   const result = await commentsDb.getCommentsByPostId(postId, userId);
 
@@ -22,12 +25,11 @@ const getCommentsByPostId = async (postId, userId) => {
   return [];
 };
 
+
 const createComment = async (comment) => {
   const commentWithPublishDate = { ...comment, publishDate: new Date() };
   if (!(await postsDb.getPostById(comment.postId))) {
-    const err = new Error("couldn't find post with the specified id");
-    err.name = 'invalidPostId';
-    throw err;
+    throw errorFactory(errors.postDoesntExist, 'couldnt find post with the specified id.');
   }
 
   const commentId = await commentsDb.createComment(commentWithPublishDate);
@@ -39,14 +41,17 @@ const createComment = async (comment) => {
 
 const addCommentLike = async (commentId, userId) => {
   if (!(await commentsDb.getCommentById(commentId))) {
-    const err = new Error('incorrect commentId');
-    err.name = 'badCommentId';
-    throw err;
+    throw errorFactory(errors.commentDoesntExist, 'Couldnt find the requested comment');
   }
   await commentsDb.addCommentLike(commentId, userId);
 };
 
+
+// add comment doesnt exist
 const deleteCommentLike = async (commentId, userId) => {
+  if (!(await commentsDb.getCommentById(commentId))) {
+    throw errorFactory(errors.commentDoesntExist, 'Couldnt find the requested comment');
+  }
   await commentsDb.deleteCommentLike(commentId, userId);
 };
 

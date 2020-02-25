@@ -1,0 +1,1 @@
+/usr/src/sql/create-db.sh & /opt/mssql/bin/sqlservr

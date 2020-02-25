@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-expressions */
 const sharp = require('sharp');
 const config = require('config');
 const appRoot = require('app-root-path');
 const uuidv4 = require('uuid/v4');
 const fs = require('fs');
+const { errorFactory, errors } = require('../utils/errorManager');
+
 
 const imagePaths = config.get('server.imagesPath');
 
@@ -32,21 +35,20 @@ const saveImage = async (image) => {
 
 const getImageStream = (uuid, isThumb) => {
   if (!fs.existsSync(getPath(uuid, isThumb))) {
-    throw new Error('File not found');
+    throw errorFactory(errors.imageNotFound, 'couldnt locate image with the uuid');
   }
   return fs.createReadStream(getPath(uuid, isThumb));
 };
 
+// add image not found
 const deleteImages = (uuid) => {
   const removeImagePromise = new Promise((res, rej) => {
     fs.unlink(getPath(uuid, false), (err) => {
-      // eslint-disable-next-line no-unused-expressions
       err ? rej(err) : res();
     });
   });
   const removeThumbPromise = new Promise((res, rej) => {
     fs.unlink(getPath(uuid, true), (err) => {
-      // eslint-disable-next-line no-unused-expressions
       err ? rej(err) : res();
     });
   });

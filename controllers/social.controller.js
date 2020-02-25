@@ -1,5 +1,5 @@
 const socialService = require('../services/social.service');
-
+const { isSpecificError, errors } = require('../utils/errorManager');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -17,6 +17,9 @@ const getUserById = async (req, res, next) => {
     const result = await socialService.getUserById(userId);
     res.json(result);
   } catch (err) {
+    if (isSpecificError(err, errors.userNotFound)) {
+      err.status = 404;
+    }
     next(err);
   }
 };

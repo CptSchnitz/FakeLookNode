@@ -1,4 +1,6 @@
 const imageService = require('../services/images.service');
+const { isSpecificError, errors } = require('../utils/errorManager');
+
 
 const getImage = (isThumb) => (req, res, next) => {
   res.set('Content-Type', 'image/webp');
@@ -6,7 +8,9 @@ const getImage = (isThumb) => (req, res, next) => {
     const stream = imageService.getImageStream(req.params.imageUuid, isThumb);
     stream.pipe(res);
   } catch (error) {
-    error.status = 404;
+    if (isSpecificError(error, errors.imageNotFound)) {
+      error.status = 404;
+    }
     next(error);
   }
 };
