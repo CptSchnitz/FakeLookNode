@@ -31,7 +31,6 @@ const login = async (email, password) => {
   const userDetails = await socialService.getUserById(user.userId);
 
   const expiration = addMinutes(new Date(), 30);
-
   return {
     idToken,
     userId: userDetails.userId,

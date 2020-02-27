@@ -9,6 +9,10 @@ const getPostById = async (postId, userId) => {
     .input('likedById', userId)
     .execute('GetPostById');
 
+  if (!result.recordset[0]) {
+    return null;
+  }
+
   const post = result.recordset[0][0];
   if (!post.tags) {
     post.tags = [];
@@ -16,6 +20,9 @@ const getPostById = async (postId, userId) => {
   if (!post.userTags) {
     post.userTags = [];
   }
+
+  // eslint-disable-next-line prefer-destructuring
+  post.creator = post.creator[0];
   return post;
 };
 
