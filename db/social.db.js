@@ -1,7 +1,7 @@
-const { poolPromise, sql } = require('./db');
+const { getPoolPromise, sql } = require('./db');
 
 const getUsers = async (filter) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   const result = await pool
     .request()
@@ -12,7 +12,7 @@ const getUsers = async (filter) => {
 };
 
 const getUserById = async (userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   const result = await pool
     .request()
@@ -23,7 +23,7 @@ const getUserById = async (userId) => {
 };
 
 const createUser = async (user) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   await pool.request()
     .input('userId', user.userId)

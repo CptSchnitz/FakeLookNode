@@ -1,7 +1,7 @@
-const { poolPromise } = require('./db');
+const { getPoolPromise } = require('./db');
 
 const getTags = async (filter) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
   const result = await pool
     .request()
     .input('filter', filter)

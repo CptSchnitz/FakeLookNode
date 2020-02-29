@@ -42,6 +42,7 @@ const login = async (email, password) => {
 
 const createUser = async (user) => {
   const { email, password, ...userDetails } = { ...user };
+
   if (await checkIfEmailUsed(email)) {
     throw errorFactory(errors.badEmail, 'the email is already used');
   }

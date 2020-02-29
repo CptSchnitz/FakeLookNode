@@ -1,7 +1,7 @@
-const { poolPromise } = require('./db');
+const { getPoolPromise } = require('./db');
 
 const getCommentsByPostId = async (postId, userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
   const result = await pool
     .request()
     .input('postId', postId)
@@ -12,7 +12,7 @@ const getCommentsByPostId = async (postId, userId) => {
 };
 
 const createComment = async (comment) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   const result = await pool
     .request()
@@ -29,7 +29,7 @@ const createComment = async (comment) => {
 };
 
 const getCommentById = async (commentId, userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
   const result = await pool
     .request()
     .input('commentId', commentId)
@@ -40,14 +40,14 @@ const getCommentById = async (commentId, userId) => {
 };
 
 const addCommentLike = async (CommentId, userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   await pool.request()
     .input('commentId', CommentId).input('likedById', userId).execute('AddCommentLike');
 };
 
 const deleteCommentLike = async (CommentId, userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   await pool.request().input('commentId', CommentId).input('likedById', userId).execute('DeleteCommentLike');
 };

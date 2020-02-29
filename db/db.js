@@ -3,15 +3,30 @@ const winston = require('winston');
 const config = require('config');
 
 const dbConfig = { ...config.get('server.dbConfig'), parseJSON: true };
-const poolPromise = new sql.ConnectionPool(dbConfig)
-  .connect()
-  .then((pool) => {
-    winston.log('info', 'connected to mssql');
-    return pool;
-  })
-  .catch((err) => winston.log('error', 'connection failed', err));
+
+let poolPromise;
+
+const initConnection = () => {
+  poolPromise = new sql.ConnectionPool(dbConfig)
+    .connect()
+    .then((pool) => {
+      winston.log('info', 'connected to mssql');
+      return pool;
+    })
+    .catch((err) => {
+      winston.log('error', 'connection failed', err);
+      return new Error('connection failed');
+    });
+};
+
+const getPoolPromise = () => {
+  if (!poolPromise) {
+    initConnection();
+  }
+  return poolPromise;
+};
 
 module.exports = {
   sql,
-  poolPromise,
+  getPoolPromise,
 };

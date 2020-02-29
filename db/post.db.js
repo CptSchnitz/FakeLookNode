@@ -1,7 +1,7 @@
-const { poolPromise, sql } = require('./db');
+const { getPoolPromise, sql } = require('./db');
 
 const getPostById = async (postId, userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   const result = await pool
     .request()
@@ -27,7 +27,7 @@ const getPostById = async (postId, userId) => {
 };
 
 const getPosts = async (postFilter, userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
   const filter = { ...postFilter };
 
   if (filter.tags) {
@@ -60,7 +60,7 @@ const getPosts = async (postFilter, userId) => {
 };
 
 const createPost = async (post) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   const result = await pool
     .request()
@@ -79,13 +79,13 @@ const createPost = async (post) => {
 };
 
 const addPostLike = async (postId, userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   await pool.request().input('postId', postId).input('likedById', userId).execute('AddPostLike');
 };
 
 const deletePostLike = async (postId, userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   await pool.request().input('postId', postId).input('likedById', userId).execute('DeletePostLike');
 };

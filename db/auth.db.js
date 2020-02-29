@@ -1,7 +1,7 @@
-const { poolPromise } = require('./db');
+const { getPoolPromise } = require('./db');
 
 const getUserByEmail = async (email) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   const result = await pool.request().input('email', email).execute('GetAuthUserByEmail');
 
@@ -9,7 +9,7 @@ const getUserByEmail = async (email) => {
 };
 
 const createAuthUser = async (email, hash) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   const result = await pool.request()
     .input('email', email)
@@ -21,7 +21,7 @@ const createAuthUser = async (email, hash) => {
 };
 
 const deleteAuthUser = async (userId) => {
-  const pool = await poolPromise;
+  const pool = await getPoolPromise();
 
   await pool.request().input('authId', userId).execute('DeleteAuthUser');
 };
