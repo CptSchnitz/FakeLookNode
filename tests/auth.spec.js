@@ -98,7 +98,7 @@ describe('auth service', function () {
 
       await loginPromise.should.eventually.be.rejectedWith('the email was not found');
       getUserByEmailStub.should.have.been.calledOnceWith(authUserStubValue.email);
-      bcryptCompareStub.should.have.been.callCount(0);
+      bcryptCompareStub.should.have.not.been.called;
     });
 
     it('should reject with an error if the password doesnt match the hash', async function () {
@@ -111,7 +111,7 @@ describe('auth service', function () {
       await loginPromise.should.eventually.be.rejectedWith('the password is incorrect');
       getUserByEmailStub.should.have.been.calledOnceWith(authUserStubValue.email);
       bcryptCompareStub.should.have.been.calledOnceWith(password, authUserStubValue.passwordHash);
-      jwtSignStub.should.have.been.callCount(0);
+      jwtSignStub.should.have.not.been.called;
     });
 
     it('should return an object with token, id, firstname, lastname, and expiration', async function () {

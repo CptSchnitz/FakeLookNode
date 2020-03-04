@@ -5,7 +5,6 @@ const { errorFactory, errors } = require('../utils/errorManager');
 
 const commentFormatter = (comment) => {
   const newComment = { ...comment };
-  newComment.likedByUser = !!newComment.likedByUser;
   if (!newComment.tags) {
     newComment.tags = [];
   }

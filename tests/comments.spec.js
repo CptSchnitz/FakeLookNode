@@ -42,7 +42,7 @@ describe('comment service', function () {
     });
 
     it('should return an array and the objects in it should have tags and userTags array', async function () {
-      getCommentsByPostIdStub.resolves([{ likedByUser: 1 }, { likedByUser: 0 }]);
+      getCommentsByPostIdStub.resolves([{ }, { }]);
       const postId = 1;
       const userId = 1;
 
@@ -51,7 +51,6 @@ describe('comment service', function () {
       result.should.be.a('array');
       result[0].tags.should.be.a('array');
       result[0].userTags.should.be.a('array');
-      result[0].likedByUser.should.be.a('boolean');
     });
   });
 
@@ -93,7 +92,7 @@ describe('comment service', function () {
       getPostByIdStub.resolves({});
       const commentId = 1;
       createCommentStub.resolves(commentId);
-      getCommentByIdStub.resolves({ ...commentInput, likedByUser: 0, commentId });
+      getCommentByIdStub.resolves({ ...commentInput, commentId });
 
       await commentsService.createComment(commentInput).should.be.fulfilled;
 
@@ -132,7 +131,7 @@ describe('comment service', function () {
       addCommentLikeStub.should.have.not.been.called;
     });
 
-    it('should call add comment and fulfilled', async function () {
+    it('should call add comment like and fulfilled', async function () {
       getCommentByIdStub.resolves({});
 
       await commentsService.addCommentLike(commentId, userId).should.be.fulfilled;
@@ -170,7 +169,7 @@ describe('comment service', function () {
       deleteCommentLikeStub.should.have.not.been.called;
     });
 
-    it('should call add comment and fulfilled', async function () {
+    it('should call delete comment like and fulfilled', async function () {
       getCommentByIdStub.resolves({});
 
       await commentsService.deleteCommentLike(commentId, userId).should.be.fulfilled;

@@ -5,6 +5,7 @@ const errors = {
   commentDoesntExist: 'commentDoesntExist',
   imageNotFound: 'imageNotFound',
   userNotFound: 'userNotFound',
+  userAlreadyExists: 'userAlreadyExists',
 };
 
 const errorFactory = (errorType, msg) => {

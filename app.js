@@ -2,8 +2,14 @@ const express = require('express');
 const config = require('config');
 const winston = require('winston');
 const cors = require('cors');
+const fs = require('fs');
+const https = require('https');
 const middleware = require('./middleware');
 const router = require('./routes');
+
+const privateKey = fs.readFileSync(config.get('server.app.sslKey'));
+const certificate = fs.readFileSync(config.get('server.app.sslCert'));
+const credentials = { key: privateKey, cert: certificate };
 
 const port = config.get('server.app.port');
 const app = express();
@@ -36,4 +42,6 @@ app.use(middleware.errorLogger);
 
 app.use(middleware.errorHandler);
 
-app.listen(port, () => winston.log('info', `Listening on port ${port}.`));
+// app.listen(port, () => winston.log('info', `Listening on port ${port}.`));
+const httpsServer = https.createServer(credentials, app);
+httpsServer.listen(port);

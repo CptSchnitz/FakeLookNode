@@ -7,7 +7,7 @@ const dbConfig = { ...config.get('server.dbConfig'), parseJSON: true };
 let poolPromise;
 
 const initConnection = () => {
-  poolPromise = new sql.ConnectionPool(dbConfig)
+  poolPromise = new sql.ConnectionPool({ ...dbConfig, options: { enableArithAbort: true } })
     .connect()
     .then((pool) => {
       winston.log('info', 'connected to mssql');
