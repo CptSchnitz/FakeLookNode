@@ -6,3 +6,5 @@ sqlscripts
 logs
 
 *.webp
+
+elastic/data

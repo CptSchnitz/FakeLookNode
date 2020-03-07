@@ -1,0 +1,79 @@
+PUT /fakelook-posts
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  }, 
+  "mappings": {
+    "dynamic":"strict",
+    "properties": {
+      "postId":{
+        "type": "keyword"
+      },
+      "commentId":{
+        "type": "keyword"
+      },
+      "creator":{
+        "properties": {
+          "userId":{
+            "type":"integer"
+          },
+          "firstName":{
+            "type":"keyword"
+          },
+          "lastName":{
+            "type":"keyword"
+          }
+        }
+      },
+      "text":{
+        "type": "text",
+        "analyzer": "english"
+      },
+      "location":{
+        "type": "geo_point"
+      },
+      "post_com_join":{
+        "type": "join",
+        "relations": {
+          "post":"comment"
+        }
+      },
+      "imageUuid":{
+        "type": "text", 
+        "index": false
+      },
+      "publishDate":{
+        "type": "date",
+        "format": "date_time"
+      },
+      "likes":{
+        "type": "integer"
+      },
+      "likedBy":{
+        "type": "integer"
+      },
+      "tags":{
+        "type": "keyword",
+        "fields": {
+          "typeahead":{
+            "type":"search_as_you_type"
+          }
+        }
+      },
+      "userTags":{
+        "properties": {
+          "userId":{
+            "type":"integer"
+          },
+          "firstName":{
+            "type":"keyword"
+          },
+          "lastName":{
+            "type":"keyword"
+          }
+        }
+      }
+    }
+  }
+}

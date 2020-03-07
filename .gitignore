@@ -108,3 +108,5 @@ config/default.yaml
 
 *.png
 *.webp
+
+elastic/data

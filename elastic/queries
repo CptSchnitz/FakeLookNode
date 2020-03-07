@@ -1,0 +1,41 @@
+GET fakelook-posts/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "geo_distance": {
+            "distance": "500km",
+            "location": {
+              "lat": 40.12,
+              "lon": -72.34
+            }
+          }
+        },
+        {
+          "range": {
+            "publishDate": {
+              "gte": "1994-01-01T00:00:00.000Z",
+              "lt": "1994-12-30T00:00:00.000Z"
+            }
+          }
+        },
+        {
+          "terms": {
+            "creator.userId": [
+              "1",
+              "2"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "likes": {
+        "order": "desc"
+      }
+    }
+  ]
+}

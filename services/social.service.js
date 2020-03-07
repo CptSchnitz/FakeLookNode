@@ -17,6 +17,7 @@ const getUserById = async (userId) => {
   }
   throw errorFactory(errors.userNotFound, 'user with the specified id was not found');
 };
+
 const createUser = async (user) => {
   if (await socialDb.getUserById(user.userId)) {
     throw errorFactory(errors.userAlreadyExists, 'cannot create user with this Id as its already exists');
@@ -24,4 +25,17 @@ const createUser = async (user) => {
   await socialDb.createUser(user);
 };
 
-module.exports = { getUsers, getUserById, createUser };
+const getUsersByIds = async (userIds) => {
+  const result = await socialDb.getUsersByIds(userIds);
+  if (result.length !== userIds.length) {
+    throw new Error();
+  }
+  return result;
+};
+
+module.exports = {
+  getUsers,
+  getUserById,
+  createUser,
+  getUsersByIds,
+};

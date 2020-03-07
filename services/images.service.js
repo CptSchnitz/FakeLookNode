@@ -52,7 +52,7 @@ const deleteImages = (uuid) => {
       err ? rej(err) : res();
     });
   });
-  return Promise.all(removeImagePromise, removeThumbPromise);
+  return Promise.all([removeImagePromise, removeThumbPromise]);
 };
 
 module.exports = { saveImage, getImageStream, deleteImages };

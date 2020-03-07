@@ -35,4 +35,19 @@ const createUser = async (user) => {
     .execute('CreateUser');
 };
 
-module.exports = { createUser, getUsers, getUserById };
+const getUsersByIds = async (userIds) => {
+  const pool = await getPoolPromise();
+
+  const result = await pool.request()
+    .input('userIds', JSON.stringify(userIds))
+    .execute('GetUsersByIds');
+
+  return result.recordset;
+};
+
+module.exports = {
+  createUser,
+  getUsers,
+  getUserById,
+  getUsersByIds,
+};

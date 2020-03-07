@@ -1,93 +1,79 @@
-const { getPoolPromise, sql } = require('./db');
+/* eslint-disable no-underscore-dangle */
+const { getClient } = require('./elastic');
+const { getSearchQuery } = require('./postQueryBuilder');
 
-const getPostById = async (postId, userId) => {
-  const pool = await getPoolPromise();
+const getPostById = async (postId) => {
+  const client = getClient;
 
-  const result = await pool
-    .request()
-    .input('PostId', sql.Int, postId)
-    .input('likedById', userId)
-    .execute('GetPostById');
+  const result = await client.get({
+    id: postId,
+    _source_excludes: 'post_com_join',
+    index: 'fakelook-posts',
+  });
 
-  if (!result.recordset[0]) {
-    return null;
-  }
-
-  const post = result.recordset[0][0];
-  if (!post.tags) {
-    post.tags = [];
-  }
-  if (!post.userTags) {
-    post.userTags = [];
-  }
-
-  // eslint-disable-next-line prefer-destructuring
-  post.creator = post.creator[0];
-  return post;
+  return result.body._source;
 };
 
-const getPosts = async (postFilter, userId) => {
-  const pool = await getPoolPromise();
-  const filter = { ...postFilter };
+const getPosts = async (postFilter) => {
+  const client = getClient;
 
-  if (filter.tags) {
-    filter.tags = JSON.stringify(filter.tags);
-  }
+  const response = await client.search({
+    index: 'fakelook-posts',
+    _source_excludes: 'post_com_join',
+    body: getSearchQuery(postFilter),
+  });
 
-  if (filter.publishers) {
-    filter.publishers = JSON.stringify(filter.publishers);
-  }
-
-  if (filter.userTags) {
-    filter.userTags = JSON.stringify(filter.userTags);
-  }
-
-  const result = await pool
-    .request()
-    .input('lng', sql.Float, filter.lng)
-    .input('lat', sql.Float, filter.lat)
-    .input('distance', sql.Float, filter.distance)
-    .input('startDate', sql.DateTime, filter.minDate)
-    .input('endDate', sql.DateTime, filter.maxDate)
-    .input('userTags', filter.userTags)
-    .input('tags', filter.tags)
-    .input('publishers', filter.publishers)
-    .input('orderBy', filter.orderBy)
-    .input('likedById', userId)
-    .execute('GetPosts');
-
-  return result.recordset[0];
+  return response.body.hits.hits.map(hit => hit._source);
 };
 
 const createPost = async (post) => {
-  const pool = await getPoolPromise();
+  const client = getClient;
 
-  const result = await pool
-    .request()
-    .input('imageUuid', sql.NVarChar(100), post.imageUuid)
-    .input('text', sql.NVarChar(500), post.text)
-    .input('lng', sql.Float, post.location.lng)
-    .input('lat', sql.Float, post.location.lat)
-    .input('publishDate', post.publishDate.toISOString().slice(0, -5))
-    .input('creatorId', sql.Int, post.creatorId)
-    .input('tags', sql.NVarChar(4000), JSON.stringify(post.tags))
-    .input('userTags', sql.NVarChar(4000), JSON.stringify(post.userTags))
-    .output('postId', sql.Int)
-    .execute('CreatePost');
+  const postWIthJoinField = { ...post, post_com_join: 'post' };
 
-  return result.output.postId;
+  await client.index({
+    index: 'fakelook-posts',
+    id: postWIthJoinField.postId,
+    body: postWIthJoinField,
+  });
 };
 
 const addPostLike = async (postId, userId) => {
-  const pool = await getPoolPromise();
+  const client = getClient;
 
-  await pool.request().input('postId', postId).input('likedById', userId).execute('AddPostLike');
+  const response = await client.update({
+    index: 'fakelook-posts',
+    id: postId,
+    body: {
+      script: {
+        id: 'add-like',
+        params: {
+          userId,
+        },
+      },
+    },
+  });
+
+  return !!response.body.response === 'noop';
 };
 
 const deletePostLike = async (postId, userId) => {
-  const pool = await getPoolPromise();
+  const client = getClient;
 
-  await pool.request().input('postId', postId).input('likedById', userId).execute('DeletePostLike');
+  const response = await client.update({
+    index: 'fakelook-posts',
+    id: postId,
+    body: {
+      script: {
+        id: 'remove-like',
+        params: {
+          userId,
+        },
+      },
+    },
+  });
+
+  return !!response.body.response === 'noop';
 };
 
 
