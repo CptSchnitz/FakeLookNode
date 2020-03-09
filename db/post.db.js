@@ -1,79 +1,41 @@
 /* eslint-disable no-underscore-dangle */
-const { getClient } = require('./elastic');
+const elasticApi = require('./elasticApi');
 const { getSearchQuery } = require('./postQueryBuilder');
+const { errorFactory, errors } = require('../utils/errorManager');
 
 const getPostById = async (postId) => {
-  const client = getClient;
+  const result = await elasticApi.getById(postId);
 
-  const result = await client.get({
-    id: postId,
-    _source_excludes: 'post_com_join',
-    index: 'fakelook-posts',
-  });
-
-  return result.body._source;
+  return result;
 };
 
 const getPosts = async (postFilter) => {
-  const client = getClient;
+  const result = await elasticApi.search(getSearchQuery(postFilter));
 
-  const response = await client.search({
-    index: 'fakelook-posts',
-    _source_excludes: 'post_com_join',
-    body: getSearchQuery(postFilter),
-  });
-
-  return response.body.hits.hits.map(hit => hit._source);
+  return result.hits.hits.map((hit) => hit._source);
 };
 
 const createPost = async (post) => {
-  const client = getClient;
+  const postWithJoinField = { ...post, postCommentJoin: 'post' };
 
-  const postWIthJoinField = { ...post, post_com_join: 'post' };
-
-  await client.index({
-    index: 'fakelook-posts',
-    id: postWIthJoinField.postId,
-    body: postWIthJoinField,
-  });
+  await elasticApi.index(
+    postWithJoinField.postId,
+    postWithJoinField,
+  );
 };
 
 const addPostLike = async (postId, userId) => {
-  const client = getClient;
-
-  const response = await client.update({
-    index: 'fakelook-posts',
-    id: postId,
-    body: {
-      script: {
-        id: 'add-like',
-        params: {
-          userId,
-        },
-      },
-    },
-  });
-
-  return !!response.body.response === 'noop';
+  const succeeded = await elasticApi.addLike(postId, userId);
+  if (!succeeded) {
+    throw errorFactory(errors.alreadyLiked, 'Post already liked by the user');
+  }
 };
 
 const deletePostLike = async (postId, userId) => {
-  const client = getClient;
-
-  const response = await client.update({
-    index: 'fakelook-posts',
-    id: postId,
-    body: {
-      script: {
-        id: 'remove-like',
-        params: {
-          userId,
-        },
-      },
-    },
-  });
-
-  return !!response.body.response === 'noop';
+  const succeeded = await elasticApi.removeLike(postId, userId);
+  if (!succeeded) {
+    throw errorFactory(errors.notLiked, 'Post not liked by the user');
+  }
 };
 
 

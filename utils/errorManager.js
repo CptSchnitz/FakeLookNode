@@ -6,6 +6,9 @@ const errors = {
   imageNotFound: 'imageNotFound',
   userNotFound: 'userNotFound',
   userAlreadyExists: 'userAlreadyExists',
+  docNotFound: 'docNotFound',
+  alreadyLiked: 'alreadyLiked',
+  notLiked: 'notLiked',
 };
 
 const errorFactory = (errorType, msg) => {

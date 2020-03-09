@@ -1,5 +1,4 @@
 const joi = require('@hapi/joi');
-const idSchema = require('./id.model');
 
 const postSchema = joi.object({
   text: joi.string().allow('').max(500).optional(),
@@ -10,7 +9,7 @@ const postSchema = joi.object({
       .required(),
   }).required(),
   tags: joi.array().items(joi.string().min(2).max(50)).unique(),
-  userTags: joi.array().items(idSchema).unique(),
+  userTags: joi.array().items(joi.number().positive().integer()).unique(),
 });
 
 module.exports = postSchema;

@@ -2,25 +2,18 @@ const shortid = require('shortid');
 const commentsDb = require('./../db/comment.db');
 const postsDb = require('./../db/post.db');
 const socialService = require('./social.service');
-const { errorFactory, errors } = require('../utils/errorManager');
+const { errorFactory, errors, isSpecificError } = require('../utils/errorManager');
 
-
-// const commentFormatter = (comment) => {
-//   const newComment = { ...comment };
-//   if (!newComment.tags) {
-//     newComment.tags = [];
-//   }
-//   if (!newComment.userTags) {
-//     newComment.userTags = [];
-//   }
-//   return newComment;
-// };
-
+const formatComment = (comment, userId) => {
+  const { postCommentJoin, likedBy, ...formattedComment } = { ...comment };
+  formattedComment.likedByUser = !!likedBy.find((id) => id === userId);
+  return formattedComment;
+};
 
 const getCommentsByPostId = async (postId, userId) => {
-  const result = await commentsDb.getCommentsByPostId(postId);
+  const comments = await commentsDb.getCommentsByPostId(postId);
 
-  return result;
+  return comments.map(comment => formatComment(comment, userId));
 };
 
 
@@ -29,7 +22,7 @@ const createComment = async (comment) => {
     throw errorFactory(errors.postDoesntExist, 'couldnt find post with the specified id.');
   }
 
-  const commentId = shortid.generate();
+  const commentId = `c${shortid.generate()}`;
   const { creatorId, ...commentFull } = {
     ...comment,
     publishDate: new Date(),
@@ -48,16 +41,31 @@ const createComment = async (comment) => {
 
   await commentsDb.createComment(commentFull);
 
+  commentFull.likedByUser = false;
   return commentFull;
 };
 
 const addCommentLike = async (commentId, userId) => {
-  await commentsDb.addCommentLike(commentId, userId);
+  try {
+    await commentsDb.addCommentLike(commentId, userId);
+  } catch (error) {
+    if (isSpecificError(error, errors.docNotFound)) {
+      throw errorFactory(errors.commentDoesntExist, 'comment with the specified Id not found');
+    }
+    throw error;
+  }
 };
 
 
 const deleteCommentLike = async (commentId, userId) => {
-  await commentsDb.deleteCommentLike(commentId, userId);
+  try {
+    await commentsDb.deleteCommentLike(commentId, userId);
+  } catch (error) {
+    if (isSpecificError(error, errors.docNotFound)) {
+      throw errorFactory(errors.commentDoesntExist, 'comment with the specified Id not found');
+    }
+    throw error;
+  }
 };
 
 module.exports = {

@@ -33,7 +33,7 @@ PUT /fakelook-posts
       "location":{
         "type": "geo_point"
       },
-      "post_com_join":{
+      "postCommentJoin":{
         "type": "join",
         "relations": {
           "post":"comment"
@@ -56,8 +56,8 @@ PUT /fakelook-posts
       "tags":{
         "type": "keyword",
         "fields": {
-          "typeahead":{
-            "type":"search_as_you_type"
+          "suggest":{
+            "type":"completion"
           }
         }
       },

@@ -48,6 +48,8 @@ const addPostLike = async (req, res, next) => {
   } catch (error) {
     if (isSpecificError(error, errors.postDoesntExist)) {
       error.status = 404;
+    } else if (isSpecificError(error, errors.alreadyLiked)) {
+      error.status = 400;
     }
     next(error);
   }
@@ -60,6 +62,8 @@ const deletePostLike = async (req, res, next) => {
   } catch (error) {
     if (isSpecificError(error, errors.postDoesntExist)) {
       error.status = 404;
+    } else if (isSpecificError(error, errors.notLiked)) {
+      error.status = 400;
     }
     next(error);
   }

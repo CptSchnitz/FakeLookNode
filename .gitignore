@@ -110,3 +110,5 @@ config/default.yaml
 *.webp
 
 elastic/data
+
+ssl/

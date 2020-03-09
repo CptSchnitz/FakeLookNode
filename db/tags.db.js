@@ -1,13 +1,21 @@
-const { getPoolPromise } = require('./db');
+const elasticApi = require('./elasticApi');
 
 const getTags = async (filter) => {
-  const pool = await getPoolPromise();
-  const result = await pool
-    .request()
-    .input('filter', filter)
-    .execute('GetTags');
+  const body = {
+    suggest: {
+      tags: {
+        prefix: filter,
+        completion: {
+          field: 'tags.suggest',
+          skip_duplicates: true,
+        },
+      },
+    },
+  };
 
-  return result.recordset;
+  const response = await elasticApi.search(body, 10, { _source_excludes: '*' });
+
+  return response.suggest.tags[0].options.map((res) => res.text);
 };
 
 module.exports = { getTags };

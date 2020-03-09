@@ -101,21 +101,23 @@ const queryBuilder = (postFilter) => {
     filters.push(tagsBuilder(postFilter.tags));
   }
 
+  const postsFilter = {
+    term: { postCommentJoin: { value: 'post' } },
+  };
 
   if (filters.length > 0) {
+    filters.push(postsFilter);
     return {
       bool: { filter: filters },
     };
   }
 
-  return {
-    match_all: {},
-  };
+  return postsFilter;
 };
 
 const sortBuilder = (orderBy) => {
   const obj = {};
-  obj[orderBy] = { order: 'desc' };
+  obj[orderBy === 'date' ? 'publishDate' : 'likes'] = { order: 'desc' };
   return obj;
 };
 

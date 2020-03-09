@@ -32,6 +32,8 @@ const addCommentLike = async (req, res, next) => {
     res.sendStatus(204);
   } catch (error) {
     if (isSpecificError(error, errors.commentDoesntExist)) {
+      error.status = 404;
+    } else if (isSpecificError(error, errors.notLiked)) {
       error.status = 400;
     }
     next(error);
@@ -44,6 +46,8 @@ const deleteCommentLike = async (req, res, next) => {
     res.sendStatus(204);
   } catch (error) {
     if (isSpecificError(error, errors.commentDoesntExist)) {
+      error.status = 404;
+    } else if (isSpecificError(error, errors.notLiked)) {
       error.status = 400;
     }
     next(error);

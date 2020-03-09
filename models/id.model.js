@@ -1,5 +1,11 @@
 const joi = require('@hapi/joi');
 
-const idSchema = joi.string().max(14);
+const id = joi.string().max(14);
 
-module.exports = idSchema;
+const postId = id.pattern(/^p.*$/);
+const commentId = id.pattern(/^c.*$/);
+
+const postIdSchema = joi.object({ postId });
+const commentLikeSchema = joi.object({ postId, commentId });
+
+module.exports = { postIdSchema, commentLikeSchema };
