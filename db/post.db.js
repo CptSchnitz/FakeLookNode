@@ -16,7 +16,7 @@ const getPosts = async (postFilter) => {
 };
 
 const createPost = async (post) => {
-  const postWithJoinField = { ...post, postCommentJoin: 'post' };
+  const postWithJoinField = { ...post, type: 'post', postCommentJoin: 'post' };
 
   await elasticApi.index(
     postWithJoinField.postId,

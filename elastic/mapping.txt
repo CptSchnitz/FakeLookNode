@@ -7,6 +7,9 @@ PUT /fakelook-posts
   "mappings": {
     "dynamic":"strict",
     "properties": {
+      "type":{
+        "type":"keyword"
+      },
       "postId":{
         "type": "keyword"
       },

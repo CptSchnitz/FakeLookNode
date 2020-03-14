@@ -13,7 +13,7 @@ const formatComment = (comment, userId) => {
 const getCommentsByPostId = async (postId, userId) => {
   const comments = await commentsDb.getCommentsByPostId(postId);
 
-  return comments.map(comment => formatComment(comment, userId));
+  return comments.map((comment) => formatComment(comment, userId));
 };
 
 

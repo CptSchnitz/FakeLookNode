@@ -7,7 +7,7 @@ const socialService = require('./social.service');
 const { errorFactory, errors } = require('../utils/errorManager');
 
 // jwt token expiration time in minutes (mb move to config?)
-const expireTime = 3000;
+const expireTime = 30;
 const jwtSecret = config.get('server.secret');
 
 const checkIfEmailUsed = async (email) => {

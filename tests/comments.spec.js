@@ -12,6 +12,8 @@ const faker = require('faker');
 const commentsDb = require('../db/comment.db');
 const postsDb = require('../db/post.db');
 const commentsService = require('../services/comments.service');
+const socialService = require('../services/social.service');
+const { errors } = require('../utils/errorManager');
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
@@ -30,27 +32,15 @@ describe('comment service', function () {
     });
     // #endregion
 
-    it('should return an empty array if post doesnt exist', async function () {
-      getCommentsByPostIdStub.resolves(null);
-      const postId = 1;
-      const userId = 1;
-
-      const result = await commentsService.getCommentsByPostId(postId, userId);
-
-      result.length.should.be.equal(0);
-      getCommentsByPostIdStub.should.have.been.calledOnceWithExactly(postId, userId);
-    });
-
-    it('should return an array and the objects in it should have tags and userTags array', async function () {
-      getCommentsByPostIdStub.resolves([{ }, { }]);
+    it('should return an array and the objects in it should have likedByUserBoolean', async function () {
+      getCommentsByPostIdStub.resolves([{ likedBy: [] }, { likedBy: [] }]);
       const postId = 1;
       const userId = 1;
 
       const result = await commentsService.getCommentsByPostId(postId, userId);
 
       result.should.be.a('array');
-      result[0].tags.should.be.a('array');
-      result[0].userTags.should.be.a('array');
+      result[0].likedByUser.should.be.a('boolean');
     });
   });
 
@@ -58,23 +48,26 @@ describe('comment service', function () {
     // #region Preperation
     let getPostByIdStub = sinon.stub();
     let createCommentStub = sinon.stub();
-    let getCommentByIdStub = sinon.stub();
-
+    let getUserById = sinon.stub();
+    let getUsersByIds = sinon.stub();
     const commentInput = {
       creatorId: 1,
       text: faker.lorem.paragraph,
       postId: 1,
     };
+
     beforeEach(function () {
       getPostByIdStub = sinon.stub(postsDb, 'getPostById');
       createCommentStub = sinon.stub(commentsDb, 'createComment');
-      getCommentByIdStub = sinon.stub(commentsDb, 'getCommentById');
+      getUserById = sinon.stub(socialService, 'getUserById');
+      getUsersByIds = sinon.stub(socialService, 'getUsersByIds');
     });
 
     afterEach(function () {
       getPostByIdStub.restore();
       createCommentStub.restore();
-      getCommentByIdStub.restore();
+      getUserById.restore();
+      getUsersByIds.restore();
     });
     // #endregion
 
@@ -92,90 +85,86 @@ describe('comment service', function () {
       getPostByIdStub.resolves({});
       const commentId = 1;
       createCommentStub.resolves(commentId);
-      getCommentByIdStub.resolves({ ...commentInput, commentId });
+      const creator = {
+        userId: faker.random.number(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+      };
+      getUserById.resolves(creator);
+      getUsersByIds.resolves([]);
 
-      await commentsService.createComment(commentInput).should.be.fulfilled;
+      const createdComment = await commentsService.createComment(commentInput).should.be.fulfilled;
 
       createCommentStub.should.be.calledOnce;
-      createCommentStub.args[0][0].should.include.keys(commentInput)
-        .and.have.property('publishDate').that.is.a('date');
-      getCommentByIdStub.should.have.been.calledAfter(createCommentStub)
-        .and.calledOnceWithExactly(commentId, commentInput.creatorId);
+      getUserById.should.be.calledOnce;
+      getUsersByIds.should.be.calledOnce;
+      createdComment.should.have.property('publishDate').that.is.a('date');
+      createdComment.should.have.property('likes').that.is.eq(0);
+      createdComment.should.have.property('creator').that.is.deep.eq(creator);
+      createdComment.should.have.property('likedBy').that.is.a('array').that.is.empty;
     });
   });
 
   describe('addCommentLike', function () {
     // #region Preperation
-    let getCommentByIdStub = sinon.stub();
     let addCommentLikeStub = sinon.stub();
     const commentId = faker.random.number();
     const userId = faker.random.number();
     beforeEach(function () {
-      getCommentByIdStub = sinon.stub(commentsDb, 'getCommentById');
       addCommentLikeStub = sinon.stub(commentsDb, 'addCommentLike');
     });
 
     afterEach(function () {
-      getCommentByIdStub.restore();
       addCommentLikeStub.restore();
     });
     // #endregion
 
     it('should reject with a error if the comment does not exist', async function () {
-      getCommentByIdStub.resolves(null);
+      addCommentLikeStub.rejects(errors.docNotFound);
 
       await commentsService.addCommentLike(commentId, userId)
-        .should.be.rejectedWith('Couldnt find the requested comment');
-
-      getCommentByIdStub.should.have.been.calledOnceWithExactly(commentId);
-      addCommentLikeStub.should.have.not.been.called;
+        .should.be.rejectedWith('comment with the specified Id not found');
     });
 
     it('should call add comment like and fulfilled', async function () {
-      getCommentByIdStub.resolves({});
+      addCommentLikeStub.resolves();
 
       await commentsService.addCommentLike(commentId, userId).should.be.fulfilled;
 
-      addCommentLikeStub.should.have.been.calledOnceWithExactly(commentId, userId)
-        .and.calledAfter(getCommentByIdStub);
+      addCommentLikeStub.should.have.been.calledOnceWithExactly(commentId, userId);
     });
   });
 
   describe('deleteCommentLike', function () {
     // #region Preperation
-    let getCommentByIdStub = sinon.stub();
     let deleteCommentLikeStub = sinon.stub();
     const commentId = faker.random.number();
     const userId = faker.random.number();
 
     beforeEach(function () {
-      getCommentByIdStub = sinon.stub(commentsDb, 'getCommentById');
       deleteCommentLikeStub = sinon.stub(commentsDb, 'deleteCommentLike');
     });
 
     afterEach(function () {
-      getCommentByIdStub.restore();
       deleteCommentLikeStub.restore();
     });
     // #endregion
 
     it('should reject with a error if the comment does not exist', async function () {
-      getCommentByIdStub.resolves(null);
+      deleteCommentLikeStub.rejects(errors.docNotFound);
 
       await commentsService.deleteCommentLike(commentId, userId)
-        .should.be.rejectedWith('Couldnt find the requested comment');
+        .should.be.rejectedWith('comment with the specified Id not found');
 
-      getCommentByIdStub.should.have.been.calledOnceWithExactly(commentId);
-      deleteCommentLikeStub.should.have.not.been.called;
+      deleteCommentLikeStub.should.have.been.calledOnce;
     });
 
     it('should call delete comment like and fulfilled', async function () {
-      getCommentByIdStub.resolves({});
+      deleteCommentLikeStub.resolves();
 
       await commentsService.deleteCommentLike(commentId, userId).should.be.fulfilled;
 
-      deleteCommentLikeStub.should.have.been.calledOnceWithExactly(commentId, userId)
-        .and.calledAfter(getCommentByIdStub);
+      deleteCommentLikeStub.should.have.been.calledOnceWithExactly(commentId, userId);
     });
   });
 });

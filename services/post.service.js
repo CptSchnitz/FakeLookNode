@@ -50,9 +50,8 @@ const createPost = async (post, imageBuffer) => {
 
 const getPosts = async (postFilters, userId) => {
   const posts = await postDb.getPosts(postFilters);
-  console.log(posts);
-  
-  return posts.map(post => formatPost(post, userId));
+
+  return posts.map((post) => formatPost(post, userId));
 };
 
 

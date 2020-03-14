@@ -16,7 +16,7 @@ const getCommentsByPostId = async (postId) => {
 };
 
 const createComment = async (comment) => {
-  const commentWithJoinField = { ...comment, postCommentJoin: { name: 'comment', parent: comment.postId } };
+  const commentWithJoinField = { ...comment, type: 'comment', postCommentJoin: { name: 'comment', parent: comment.postId } };
 
   await elasticApi.index(comment.commentId, commentWithJoinField);
 };

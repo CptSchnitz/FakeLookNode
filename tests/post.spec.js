@@ -13,6 +13,8 @@ const postDb = require('../db/post.db');
 const commentsService = require('../services/comments.service');
 const imageService = require('../services/images.service');
 const postService = require('../services/post.service');
+const socialService = require('../services/social.service');
+const { errors } = require('../utils/errorManager');
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
@@ -38,7 +40,7 @@ describe('post service', function () {
 
     // #endregion
     it('it should return the post requested if it exists', async function () {
-      const post = { postId };
+      const post = { postId, likedBy: [] };
       getPostByIdStub.resolves(post);
       getCommentsByPostIdStub.resolves([]);
 
@@ -65,6 +67,8 @@ describe('post service', function () {
     let saveImageStub = sinon.stub();
     let deleteImageStub = sinon.stub();
     let createPostStub = sinon.stub();
+    let getUserById = sinon.stub();
+    let getUsersByIds = sinon.stub();
 
     const image = faker.image.food();
     const postInput = {};
@@ -74,21 +78,31 @@ describe('post service', function () {
       saveImageStub = sinon.stub(imageService, 'saveImage');
       deleteImageStub = sinon.stub(imageService, 'deleteImages');
       createPostStub = sinon.stub(postDb, 'createPost');
+      getUserById = sinon.stub(socialService, 'getUserById');
+      getUsersByIds = sinon.stub(socialService, 'getUsersByIds');
     });
 
     afterEach(function () {
       saveImageStub.restore();
       deleteImageStub.restore();
       createPostStub.restore();
+      getUserById.restore();
+      getUsersByIds.restore();
     });
     // #endregion
 
     it('should create a post and return the postId', async function () {
       saveImageStub.resolves(uuid);
-      const postId = faker.random.number();
-      createPostStub.resolves(postId);
+      createPostStub.resolves();
+      const creator = {
+        userId: faker.random.number(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+      };
+      getUserById.resolves(creator);
+      getUsersByIds.resolves([]);
 
-      await postService.createPost(postInput, image).should.eventually.be.eq(postId);
+      await postService.createPost(postInput, image).should.be.fulfilled;
 
       saveImageStub.should.have.been.calledOnceWithExactly(image);
       const createPostArg = createPostStub.args[0][0];
@@ -122,94 +136,77 @@ describe('post service', function () {
     // #endregion
 
     it('should return array of posts', async function () {
-      getPostsStub.resolves([{}, {}]);
+      getPostsStub.resolves([{ likedBy: [] }, { likedBy: [] }]);
 
       await postService.getPosts(postFilter, userId)
         .should.eventually.be.a('array').that.is.not.empty;
 
-      getPostsStub.should.have.been.calledOnceWithExactly(postFilter, userId);
-    });
-
-    it('should return an empty array if there are no posts that satisfy the filters', async function () {
-      getPostsStub.resolves(null);
-
-      await postService.getPosts(postFilter, userId)
-        .should.eventually.be.a('array').that.is.empty;
+      getPostsStub.should.have.been.calledOnceWithExactly(postFilter);
     });
   });
 
   describe('addPostLike', function () {
     // #region Preparation
-    let getPostByIdStub = sinon.stub();
     let addPostLikeStub = sinon.stub();
     const postId = faker.random.number();
     const userId = faker.random.number();
     beforeEach(function () {
-      getPostByIdStub = sinon.stub(postDb, 'getPostById');
       addPostLikeStub = sinon.stub(postDb, 'addPostLike');
     });
 
     afterEach(function () {
-      getPostByIdStub.restore();
       addPostLikeStub.restore();
     });
     // #endregion
 
     it('should reject with a error if the post does not exist', async function () {
-      getPostByIdStub.resolves(undefined);
+      addPostLikeStub.rejects(errors.docNotFound);
 
       await postService.addPostLike(postId, userId)
-        .should.be.rejectedWith('the post to like doesnt exist');
+        .should.be.rejectedWith('post with the specified Id not found');
 
-      getPostByIdStub.should.have.been.calledOnceWithExactly(postId, userId);
-      addPostLikeStub.should.have.not.been.called;
+      addPostLikeStub.should.have.been.calledOnce;
     });
 
     it('should call add post like and fulfilled', async function () {
-      getPostByIdStub.resolves({});
+      addPostLikeStub.resolves();
 
       await postService.addPostLike(postId, userId).should.be.fulfilled;
 
-      addPostLikeStub.should.have.been.calledOnceWithExactly(postId, userId)
-        .and.calledAfter(getPostByIdStub);
+      addPostLikeStub.should.have.been.calledOnceWithExactly(postId, userId);
     });
   });
 
   describe('deletePostLike', function () {
     // #region Preparation
-    let getPostByIdStub = sinon.stub();
     let deletePostLikeStub = sinon.stub();
     const postId = faker.random.number();
     const userId = faker.random.number();
 
     beforeEach(function () {
-      getPostByIdStub = sinon.stub(postDb, 'getPostById');
       deletePostLikeStub = sinon.stub(postDb, 'deletePostLike');
     });
 
     afterEach(function () {
-      getPostByIdStub.restore();
       deletePostLikeStub.restore();
     });
     // #endregion
 
     it('should reject with a error if the post does not exist', async function () {
-      getPostByIdStub.resolves(null);
+      deletePostLikeStub.rejects(errors.docNotFound);
 
       await postService.deletePostLike(postId, userId)
-        .should.be.rejectedWith('the post to like doesnt exist');
+        .should.be.rejectedWith('post with the specified Id not found');
 
-      getPostByIdStub.should.have.been.calledOnceWithExactly(postId, userId);
-      deletePostLikeStub.should.have.not.been.called;
+      deletePostLikeStub.should.have.been.calledOnce;
     });
 
     it('should call add post and fulfilled', async function () {
-      getPostByIdStub.resolves({});
+      deletePostLikeStub.resolves();
 
       await postService.deletePostLike(postId, userId).should.be.fulfilled;
 
-      deletePostLikeStub.should.have.been.calledOnceWithExactly(postId, userId)
-        .and.calledAfter(getPostByIdStub);
+      deletePostLikeStub.should.have.been.calledOnceWithExactly(postId, userId);
     });
   });
 });
