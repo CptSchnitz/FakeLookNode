@@ -1,11 +1,13 @@
 const express = require('express');
-const authMiddleware = require('../../middleware/auth.middleware');
 
-const api = express.Router();
+module.exports = (authRoute, postsRoute, usersRoute, tagsRoute, authMiddleware) => {
+  const api = express.Router();
 
-api.use('/auth', require('./auth'));
-api.use('/Posts', authMiddleware, require('./posts'));
-api.use('/Users', authMiddleware, require('./users'));
-api.use('/Tags', authMiddleware, require('./tags'));
+  api.use('/auth', authRoute);
 
-module.exports = api;
+  api.use('/Posts', authMiddleware.checkAuth.bind(authMiddleware), postsRoute);
+  api.use('/Users', authMiddleware.checkAuth.bind(authMiddleware), usersRoute);
+  api.use('/Tags', authMiddleware.checkAuth.bind(authMiddleware), tagsRoute);
+
+  return api;
+};

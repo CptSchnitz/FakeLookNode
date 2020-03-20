@@ -10,6 +10,8 @@ RUN npm install
 
 COPY . .
 
+RUN mkdir -p /usr/share/images/
+
 EXPOSE 4000
 
 CMD [ "node", "app.js" ]

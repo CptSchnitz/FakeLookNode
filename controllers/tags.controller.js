@@ -1,14 +1,15 @@
-const tagService = require('./../services/tags.service');
+module.exports = class TagsController {
+  constructor(tagService) {
+    this.tagService = tagService;
+  }
 
-
-const getTags = async (req, res, next) => {
-  try {
-    const { filter } = req.query;
-    const result = await tagService.getTags(filter);
-    res.json(result);
-  } catch (err) {
-    next(err);
+  async getTags(req, res, next) {
+    try {
+      const { filter } = req.query;
+      const result = await this.tagService.getTags(filter);
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
   }
 };
-
-module.exports = { getTags };

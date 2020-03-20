@@ -1,0 +1,747 @@
+openapi: 3.0.1
+info:
+  title: FakeLook API
+  description: This is a server for a project called fakelook. its a social media
+    focused on images with geolocation.
+  contact:
+    name: ofer adelstein
+    email: ofer.adel@gmail.com
+  version: 0.8.3
+servers:
+- url: https://localhost/api
+tags:
+- name: posts
+  description: Everything about posts
+- name: comments
+  description: Operations related to post comments
+- name: users
+  description: Operations about users
+- name: tags
+  description: Operations about tags
+- name: auth
+  description: Registering and login into a user
+  
+paths:
+  /posts:
+    get:
+      tags:
+      - posts
+      summary: Get posts
+      operationId: getPosts
+      description: Get posts with an option to filter them.
+      parameters: 
+        - in: query
+          name: publishers[]
+          description: get posts published by those creators
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/userId'
+            uniqueItems: true
+        - in: query
+          name: tags[]
+          description: get posts containing all those tags
+          schema:
+            $ref: '#/components/schemas/tags'
+        - in: query
+          name: userTags[]
+          description: get posts with those user ids tagged
+          schema:
+            $ref: '#/components/schemas/userTagsInput'
+        - in: query
+          name: distance
+          description: the distance from the given location
+          schema:
+            type: integer
+            exclusiveMaximum: true
+            maximum: 20017462
+        - in: query
+          name: lat
+          description: the latitude for the distance
+          schema:
+            $ref: '#/components/schemas/lat'
+        - in: query
+          name: lon
+          description: the longtitude for the distance
+          schema:
+            $ref: '#/components/schemas/lon'
+        - in: query
+          name: minDate
+          description: return posts after this date (inclusive)
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: maxDate
+          description: return posts before this date (exclusive)
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: orderBy
+          description: the order in which to return the posts
+          schema:
+            type: string
+            enum: 
+              - likes
+              - date
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/post'
+        400:
+          description: one of the query parameters is invalid
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+      security:
+      - auth: []
+      
+    post:
+      tags:
+      - posts
+      summary: upload a new post
+      operationId: createPost
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                data:
+                  allOf:
+                    - description: "See newPost schema below"
+                    - $ref: '#/components/schemas/newPost'
+            encoding:
+              image: # Property name (see above)
+                contentType: image/png, image/jpeg
+      responses:
+        201:
+          description: Post created
+          headers:
+            Location:
+              description: url to the created post
+              schema:
+                type: string
+                format: url
+                example: https://localhost/posts/pNNpr3-3y
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  postId:
+                    $ref: '#/components/schemas/postId'
+        400:
+          description: the post proprties were invalid or the image was of unsupported format
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+      security:
+      - auth: []
+      
+  /posts/{postId}:
+    get:
+      tags:
+      - posts
+      summary: get a specific post by its id
+      parameters:
+      - $ref: '#/components/parameters/postId'
+      operationId: getPostById
+      responses:
+        200:
+          description: OK
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/extendedPost'
+        400:
+          description: Post id format is incorrect
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/PostNotFoundError'
+      security:
+      - auth: []
+      
+  /posts/{postId}/like:
+    post:
+      tags:
+      - posts
+      summary: like a specific post
+      parameters:
+      - $ref: '#/components/parameters/postId'
+      operationId: addPostLike
+      responses:
+        204:
+          description: Post liked
+        400:
+          description: Post is already liked by the user, or post id format is incorrect
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/PostNotFoundError'
+          
+      security:
+      - auth: []
+      
+    delete:
+      tags:
+      - posts
+      summary: remove a like from a specific post
+      parameters:
+      - $ref: '#/components/parameters/postId'
+      operationId: deletePostLike
+      responses:
+        204:
+          description: Post like remoed
+        400:
+          description: Post is not liked by the user, or post id format is incorrect
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/PostNotFoundError'
+      security:
+      - auth: []
+      
+  /posts/{postId}/comments:
+    get:
+      tags:
+        - comments
+      operationId: getCommentsByPostId
+      summary: Get all the comments of the specific post
+      parameters: 
+        - $ref: '#/components/parameters/postId'
+      responses:
+        200:
+          description: operation succesful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+        400:
+          description: The post id format is incorrect.
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/PostNotFoundError'
+      security: 
+      - auth: []
+    post:
+      tags:
+        - comments
+      operationId: createComment
+      summary: add a new comment to a post.
+      parameters: 
+        - $ref: '#/components/parameters/postId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newComment'
+      responses:
+        201:
+          description: comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+        400:
+          description: one of the properties of the comment is invalid.
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/PostNotFoundError'
+      security: 
+        - auth: []
+      
+  /posts/{postId}/comments/{commentId}/like:
+    post:
+      tags:
+      - comments
+      summary: like a specific comment
+      parameters:
+      - $ref: '#/components/parameters/postId'
+      - $ref: '#/components/parameters/commentId'
+      operationId: addCommentLike
+      responses:
+        204:
+          description: Comment liked
+        400:
+          description: Comment is already liked by the user, or comment id format is incorrect
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/CommentNotFoundError'
+          
+      security:
+      - auth: []
+      
+    delete:
+      tags:
+      - comments
+      summary: remove a like from a comment
+      parameters:
+      - $ref: '#/components/parameters/postId'
+      - $ref: '#/components/parameters/commentId'
+      operationId: deleteCommentLike
+      responses:
+        204:
+          description: Comment Disliked
+        400:
+          description: Comment is not liked by the user, or comment id format is incorrect
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/CommentNotFoundError'
+      security:
+      - auth: []
+  
+  /users:
+    get:
+      tags:
+        - users
+      summary: get all the users with an option to filter.
+      parameters: 
+        - $ref: '#/components/parameters/stringFilter'
+      responses:
+        200:
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/simpleUser'
+        400:
+          description: the filter is invalid
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+      security: 
+      - auth: []
+  
+  /users/{userId}:
+    get:
+      tags: 
+        - users
+      summary: get a user by specific id
+      operationId: getUserById
+      parameters: 
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/userId'
+      responses:
+        200:
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        400:
+          description: The user id is invalid
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          description: a user with the specified id was not found
+      security: 
+      - auth: []
+  
+  /tags:
+    get:
+      tags:
+        - tags
+      summary: get tags based on a optional filter
+      operationId: getTags
+      parameters: 
+        - $ref: '#/components/parameters/stringFilter'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tags'
+        400:
+          description: The filter is invalid
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+      security: 
+      - auth: []
+  
+  /auth/register:
+    post:
+      tags: 
+        - auth
+      summary: Create a new user
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newUser'
+      responses:
+        201: 
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    $ref: '#/components/schemas/userId'
+        400:
+          description: the request body is invalid, or the email user is already taken
+      
+  
+  /auth/login:
+    post:
+      tags: 
+        - auth
+      summary: login with an existing user
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login'
+      responses:
+        200:
+          description: login succesful
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/simpleUser'
+                  - type: object
+                    properties:
+                      expiration:
+                        type: string
+                        format: date-time
+                      idToken:
+                        type: string
+                        format: jwt
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ
+        400:
+          description: the format of the email or password is invalid.
+        401:
+          description: the email or password are incorrect.
+        
+      
+  
+  /auth/isTaken:
+    get:
+      tags: 
+        - auth
+      summary: check if specified email is taken
+      operationId: isTaken
+      parameters: 
+        - in: query
+          required: true
+          name: email
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+            description: True if the email is taken, else false.
+            content:
+              application:json:
+                schema:
+                  type: boolean
+        400:
+          description: The email parameter is invalid.
+          
+        
+      
+components:
+  schemas:
+    userId:
+      type: integer
+      minimum: 1
+      exclusiveMaximum: true
+      example: 1
+      
+    postId:
+      type: string
+      example: pNNpr3-3y
+    
+    commentId:
+      type: string
+      example: cNNpr3-3y
+    
+    tag:
+      type: string
+      example: alpha
+      minLength: 2
+      maxLength: 50
+    
+    address:
+      type: string
+      example: Jaffa st 1
+      minLength: 1
+      maxLength: 200
+    
+    workPlace:
+      type: string
+      example: Pentagon
+      minLength: 1
+      maxLength: 100
+    
+    lastName:
+      type: string
+      example: doe
+      minLength: 1
+      maxLength: 50
+    
+    firstName:
+      type: string
+      example: john
+      minLength: 1
+      maxLength: 50
+      
+    text:
+      type: string
+      maxLength: 500
+      example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+      
+    lat:
+      type: number
+      format: float
+      maximum: 90
+      minimum: -90
+      example: 53.4631
+      
+    lon:
+      type: number
+      format: float
+      maximum: 180
+      minimum: -180
+      example: -2.2913
+      
+    location:
+      type: object
+      properties:
+        lat:
+          $ref: '#/components/schemas/lat'
+        lon:
+          $ref: '#/components/schemas/lon'
+      required: 
+        - lat
+        - lon
+          
+    tags:
+      type: array
+      items:
+        $ref: '#/components/schemas/tag'
+      uniqueItems: true
+      example: 
+        - alpha
+        - bravo
+        - charlie
+      
+    userTagsInput:
+      type: array
+      items:
+        $ref: '#/components/schemas/userId'
+      uniqueItems: true
+    
+    userTagsOutput:
+      type: array
+      items:
+        $ref: '#/components/schemas/simpleUser'
+    
+    simpleUser:
+      type: object
+      properties:
+        userId:
+          $ref: '#/components/schemas/userId'
+        firstName:
+          $ref: '#/components/schemas/firstName'
+        lastName:
+          $ref: '#/components/schemas/lastName'
+    
+    user:
+      allOf:
+        - $ref: '#/components/schemas/simpleUser'
+        - type: object
+          properties:
+            address:
+              $ref: '#/components/schemas/address'
+            workPlace:
+              $ref: '#/components/schemas/workPlace'
+            birthDate:
+              type: string
+              format: date-time
+              
+          
+    comment:
+      type: object
+      properties:
+        text:
+          $ref: '#/components/schemas/text'
+        tags:
+          $ref: '#/components/schemas/tags'
+        userTags:
+          $ref: '#/components/schemas/userTagsOutput'
+        publishDate:
+          type: string
+          format: date-time
+        postId:
+          $ref: '#/components/schemas/postId'
+        creator:
+          $ref: '#/components/schemas/simpleUser'
+        likedByUser:
+          type: boolean
+        commentId:
+          $ref: '#/components/schemas/commentId'
+
+    post:
+      type: object
+      properties:
+        text:
+          $ref: '#/components/schemas/text'
+        location:
+          $ref: '#/components/schemas/location'
+        tags:
+          $ref: '#/components/schemas/tags'
+        userTags:
+          $ref: '#/components/schemas/userTagsOutput'
+        publishDate:
+          type: string
+          format: date-time
+        imageUuid: 
+          type: string
+          format: uuid
+        postId:
+          $ref: '#/components/schemas/postId'
+        creator:
+          $ref: '#/components/schemas/simpleUser'
+        likedByUser:
+          type: boolean
+    
+    extendedPost:
+      allOf:
+        - $ref: '#/components/schemas/post'
+        - type: object
+          properties:
+            comments:
+              type: array
+              items:
+                $ref: '#/components/schemas/comment'
+        
+    newPost:
+      type: object
+      properties:
+        text:
+          $ref: '#/components/schemas/text'
+        tags:
+          $ref: '#/components/schemas/tags'
+        userTags:
+          $ref: '#/components/schemas/userTagsInput'
+        location:
+          $ref: '#/components/schemas/location'
+      required: 
+        - text
+        - tags
+        - userTags
+        - location
+    
+    newComment:
+      type: object
+      properties:
+        text:
+          $ref: '#/components/schemas/text'
+        tags:
+          $ref: '#/components/schemas/tags'
+        userTags:
+          $ref: '#/components/schemas/userTagsInput'
+      required: 
+        - text
+        - tags
+        - userTags
+    
+    login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 30
+      required: 
+        - email
+        - password
+    
+    newUser:
+      allOf:
+        - $ref: '#/components/schemas/login'
+        - type: object
+          properties:
+            firstName:
+              $ref: '#/components/schemas/firstName'
+            lastName:
+              $ref: '#/components/schemas/lastName'
+            address:
+              $ref: '#/components/schemas/address'
+            workPlace:
+              $ref: '#/components/schemas/workPlace'
+            birthDate:
+              type: string
+              format: date-time
+          required:
+            - firstName
+            - lastName
+            - address
+            - workPlace
+            - birthDate
+          
+  responses:
+    UnauthorizedError:
+      description: API key is missing or invalid
+    PostNotFoundError:
+      description: Post with the specified id was not found
+    CommentNotFoundError:
+      description: Comment with the specified id was not found
+      
+  parameters:
+    postId:
+      name: postId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/postId'
+    stringFilter:
+      in: query
+      name: filter
+      description: filter by the specified string.
+      schema:
+        type: string
+        minLength: 1
+    
+    commentId:
+      name: commentId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/commentId'
+        
+  securitySchemes:
+    auth:
+      type: http
+      scheme: bearer
+

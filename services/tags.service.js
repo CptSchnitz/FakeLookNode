@@ -1,5 +1,9 @@
-const tagsDb = require('./../db/tags.db');
+module.exports = class TagsService {
+  constructor(tagsDb) {
+    this.tagsDb = tagsDb;
+  }
 
-const getTags = async (filter) => tagsDb.getTags(filter);
-
-module.exports = { getTags };
+  async getTags(filter) {
+    return this.tagsDb.getTags(filter);
+  }
+};

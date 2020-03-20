@@ -1,9 +1,8 @@
 USE [master]
 GO
-GO
 create login ofer with password = 'Password1234'
 GO
-/****** Object:  Database [FakeLook]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Database [FakeLook]    Script Date: 14/03/2020 7:28:37 PM ******/
 CREATE DATABASE [FakeLook]
 GO
 ALTER DATABASE [FakeLook] SET COMPATIBILITY_LEVEL = 140
@@ -77,12 +76,15 @@ ALTER DATABASE [FakeLook] SET QUERY_STORE = OFF
 GO
 USE [FakeLook]
 GO
+
 CREATE USER ofer FOR LOGIN ofer;
+
 GO
+
 GRANT EXECUTE TO ofer
+
 GO
-GO
-/****** Object:  Table [dbo].[Comments]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[Comments]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -99,7 +101,7 @@ CREATE TABLE [dbo].[Comments](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentsLikes]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[CommentsLikes]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -114,7 +116,7 @@ CREATE TABLE [dbo].[CommentsLikes](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentsTags]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[CommentsTags]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -129,7 +131,7 @@ CREATE TABLE [dbo].[CommentsTags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CommentUserTags]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[CommentUserTags]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -144,7 +146,7 @@ CREATE TABLE [dbo].[CommentUserTags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Posts]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[Posts]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -162,7 +164,7 @@ CREATE TABLE [dbo].[Posts](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsLikes]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[PostsLikes]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -177,7 +179,7 @@ CREATE TABLE [dbo].[PostsLikes](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsTags]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[PostsTags]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -192,7 +194,7 @@ CREATE TABLE [dbo].[PostsTags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PostsUserTags]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[PostsUserTags]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -207,7 +209,7 @@ CREATE TABLE [dbo].[PostsUserTags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tags]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[Tags]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -221,7 +223,7 @@ CREATE TABLE [dbo].[Tags](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserAuth]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[UserAuth]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -240,7 +242,7 @@ CREATE TABLE [dbo].[UserAuth](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -260,7 +262,7 @@ CREATE TABLE [dbo].[Users](
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [emailIndex_UserAuth]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  Index [emailIndex_UserAuth]    Script Date: 14/03/2020 7:28:38 PM ******/
 CREATE NONCLUSTERED INDEX [emailIndex_UserAuth] ON [dbo].[UserAuth]
 (
 	[email] ASC
@@ -337,7 +339,7 @@ REFERENCES [dbo].[UserAuth] ([userId])
 GO
 ALTER TABLE [dbo].[Users] CHECK CONSTRAINT [FK_Users_UserAuth1]
 GO
-/****** Object:  StoredProcedure [dbo].[AddCommentLike]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[AddCommentLike]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -360,7 +362,7 @@ insert into [dbo].[CommentsLikes] (commentId, likedById)
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[AddPostLike]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[AddPostLike]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -384,7 +386,7 @@ insert into [dbo].[PostsLikes] (postId, likedById)
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreateAuthUser]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[CreateAuthUser]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -417,7 +419,7 @@ INSERT INTO [dbo].[UserAuth]
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreateComment]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[CreateComment]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -482,7 +484,7 @@ BEGIN
 		where tagName in (select value from openjson(@tags))
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreatePost]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[CreatePost]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -560,7 +562,7 @@ BEGIN
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[CreateUser]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[CreateUser]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -588,7 +590,7 @@ BEGIN
 			@BirthDate)
 END
 GO
-/****** Object:  StoredProcedure [dbo].[DeleteAuthUser]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[DeleteAuthUser]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -610,7 +612,7 @@ DELETE FROM [dbo].[UserAuth]
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[DeleteCommentLike]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[DeleteCommentLike]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -632,7 +634,7 @@ DELETE FROM [dbo].[CommentsLikes]
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[DeletePostLike]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[DeletePostLike]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -656,7 +658,7 @@ DELETE FROM [dbo].[PostsLikes]
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetAllUsers]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetAllUsers]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -674,7 +676,7 @@ BEGIN
 	from [Users]
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetAuthUserByEmail]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetAuthUserByEmail]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -694,7 +696,7 @@ BEGIN
 	where email = @email
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetCommentbyId]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetCommentbyId]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -730,15 +732,15 @@ BEGIN
 			on [CommentsTags].[commentId] = [Comments].[commentId]
 			and [CommentsTags].[tagId] = [Tags].[tagId] for json auto) as [tags],
 
-	likedByUser = case when @likedById in (select [likedById] from [CommentsLikes] 
-											where [commentId] = @commentId) then 1 else 0 end
+	likedByUser = cast(case when @likedById in (select [likedById] from [CommentsLikes] 
+											where [commentId] = @commentId) then 1 else 0 end as bit)
 
 	from [Comments] join [Users] on [Comments].[creatorId] = [Users].[userId]
 	where [commentId] = @commentId
 	for json path
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetCommentsByPostId]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetCommentsByPostId]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -769,15 +771,15 @@ BEGIN
 			on [CommentsTags].[commentId] = [Comments].[commentId] 
 			and [CommentsTags].[tagId] = [Tags].[tagId] for json auto) as [tags],
 
-		likedByUser = case when @likedById in (select [likedById] from 
-			[CommentsLikes] where [commentId] = [Comments].[commentId]) then 1 else 0 end
+		likedByUser = cast(case when @likedById in (select [likedById] from 
+			[CommentsLikes] where [commentId] = [Comments].[commentId]) then 1 else 0 end as bit)
 
 	from [Comments] join [Users] on [Comments].[creatorId] = [Users].[userId]
 	where [postId] = @postId
 	for json path
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetPostById]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetPostById]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -810,8 +812,8 @@ BEGIN
 	where [postId] = @postId
 	for json auto) as [userTags],
 
-	likedByUser = case when @likedById in 
-		(select [likedById] from [PostsLikes] where [postId] = @postId) then 1 else 0 end
+	likedByUser = cast(case when @likedById in 
+		(select [likedById] from [PostsLikes] where [postId] = @postId) then 1 else 0 end as bit)
 
 	from Posts
 	where PostId = @PostId
@@ -820,7 +822,7 @@ BEGIN
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetPosts]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetPosts]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -902,8 +904,8 @@ BEGIN
 		[text], [userid] as [creator.id], [Users].[firstName] as [creator.firstName],
 		[Users].[lastName] as [creator.lastName], count([PostsLikes].[likedById]) as [likes],
 
-		likedByUser = case when @likedById in 
-			(select [likedById] from [PostsLikes] where [postId] = [Posts].[postId]) then 1 else 0 end
+		likedByUser = cast( case when @likedById in 
+			(select [likedById] from [PostsLikes] where [postId] = [Posts].[postId]) then 1 else 0 end as bit)
 
 	from [Posts] join [Users] on [Posts].[creatorId] = [Users].[userId] 
 		left join [PostsLikes] on [PostsLikes].[postId] = [Posts].[postId]
@@ -922,7 +924,7 @@ BEGIN
 	for json path
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetTags]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetTags]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -948,7 +950,7 @@ BEGIN
 	
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -973,7 +975,7 @@ BEGIN
 	where UserId = @UserId
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetUsers]    Script Date: 26/02/2020 9:36:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetUsers]    Script Date: 14/03/2020 7:28:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -997,6 +999,30 @@ BEGIN
 	from Users
 	where (@filter is null) or charindex(upper(@filter) ,upper(Users.firstName + ' ' + Users.lastName)) > 0
 	
+END
+GO
+/****** Object:  StoredProcedure [dbo].[GetUsersByIds]    Script Date: 14/03/2020 7:28:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[GetUsersByIds]
+	-- Add the parameters for the stored procedure here
+	@userIds nvarchar(4000) = null
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+    -- Insert statements for procedure here
+	SELECT firstName,lastName,userId
+	from Users
+	where userId in (select value from openjson(@userIds))
 END
 GO
 USE [master]

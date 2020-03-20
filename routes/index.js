@@ -1,8 +1,11 @@
 const express = require('express');
 
-const router = express.Router();
 
-router.use('/api', require('./api'));
-router.use('/images', require('./images'));
+module.exports = (apiRoutes, imageRoute) => {
+  const router = express.Router();
 
-module.exports = router;
+  router.use('/api', apiRoutes);
+  router.use('/images', imageRoute);
+
+  return router;
+};

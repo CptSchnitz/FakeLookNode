@@ -1,29 +1,31 @@
-const { getPoolPromise } = require('./db');
+module.exports = class AuthDb {
+  constructor(sqlConnection) {
+    this.sqlConnection = sqlConnection;
+  }
 
-const getUserByEmail = async (email) => {
-  const pool = await getPoolPromise();
+  async getUserByEmail(email) {
+    const pool = this.sqlConnection.getPool();
 
-  const result = await pool.request().input('email', email).execute('GetAuthUserByEmail');
+    const result = await pool.request().input('email', email).execute('GetAuthUserByEmail');
 
-  return result.recordset[0];
+    return result.recordset[0];
+  }
+
+  async createAuthUser(email, hash) {
+    const pool = this.sqlConnection.getPool();
+
+    const result = await pool.request()
+      .input('email', email)
+      .input('passwordHash', hash)
+      .output('userId')
+      .execute('CreateAuthUser');
+
+    return result.output.userId;
+  }
+
+  async deleteAuthUser(userId) {
+    const pool = this.sqlConnection.getPool();
+
+    await pool.request().input('authId', userId).execute('DeleteAuthUser');
+  }
 };
-
-const createAuthUser = async (email, hash) => {
-  const pool = await getPoolPromise();
-
-  const result = await pool.request()
-    .input('email', email)
-    .input('passwordHash', hash)
-    .output('userId')
-    .execute('CreateAuthUser');
-
-  return result.output.userId;
-};
-
-const deleteAuthUser = async (userId) => {
-  const pool = await getPoolPromise();
-
-  await pool.request().input('authId', userId).execute('DeleteAuthUser');
-};
-
-module.exports = { createAuthUser, getUserByEmail, deleteAuthUser };
