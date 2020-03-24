@@ -41,6 +41,7 @@ module.exports = class Server {
   }
 
   start() {
+    let server;
     const {
       port, ssl, sslKey, sslCert,
     } = this.serverConfig;
@@ -48,11 +49,10 @@ module.exports = class Server {
       const privateKey = fs.readFileSync(sslKey);
       const certificate = fs.readFileSync(sslCert);
       const credentials = { key: privateKey, cert: certificate };
-      const httpsServer = https.createServer(credentials, this.app);
-      httpsServer.listen(port);
+      server = https.createServer(credentials, this.app);
     } else {
-      const httpServer = http.createServer(this.app);
-      httpServer.listen(port);
+      server = http.createServer(this.app);
     }
+    server.listen(port);
   }
 };

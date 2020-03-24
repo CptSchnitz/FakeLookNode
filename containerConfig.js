@@ -70,10 +70,11 @@ container.register('middleware', ['logPaths'], require('./middleware'));
 
 // routes
 container.register('authRoute', ['authController'], require('./routes/api/auth.route'));
-container.register('postsRoute', ['postController', 'commentsController', 'middleware'], require('./routes/api/posts.route'));
+container.register('postsRoute', ['postController', 'middleware'], require('./routes/api/posts.route'));
+container.register('commentsRoute', ['commentsController'], require('./routes/api/comments.route'));
 container.register('tagsRoute', ['tagsController'], require('./routes/api/tags.route'));
 container.register('usersRoute', ['socialController'], require('./routes/api/users.route'));
-container.register('apiRoutes', ['authRoute', 'postsRoute', 'usersRoute', 'tagsRoute', 'authMiddleware'], require('./routes/api'));
+container.register('apiRoutes', ['authRoute', 'postsRoute', 'usersRoute', 'tagsRoute', 'commentsRoute', 'authMiddleware'], require('./routes/api'));
 container.register('imageRoute', ['imageController'], require('./routes/images'));
 container.register('routes', ['apiRoutes', 'imageRoute'], require('./routes'));
 
