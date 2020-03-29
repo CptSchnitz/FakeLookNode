@@ -1,4 +1,5 @@
 const shortid = require('shortid');
+const EventEmitter = require('events');
 const { errorFactory, errors, isSpecificError } = require('../utils/errorManager');
 
 const formatComment = (comment, userId) => {
@@ -7,8 +8,9 @@ const formatComment = (comment, userId) => {
   return formattedComment;
 };
 
-module.exports = class CommentsService {
+module.exports = class CommentsService extends EventEmitter {
   constructor(commentsDb, postDb, socialService) {
+    super();
     this.commentsDb = commentsDb;
     this.postDb = postDb;
     this.socialService = socialService;
@@ -48,12 +50,21 @@ module.exports = class CommentsService {
     await this.commentsDb.createComment(commentFull);
 
     commentFull.likedByUser = false;
+    this.emit('newComment', commentFull);
     return commentFull;
   }
 
   async addCommentLike(commentId, userId) {
     try {
       await this.commentsDb.addCommentLike(commentId, userId);
+      const comment = await this.commentsDb.getCommentById(commentId);
+      this.emit('like', {
+        commentId,
+        postId: comment.postId,
+        count: comment.likes,
+        action: 'add',
+        userId,
+      });
     } catch (error) {
       if (isSpecificError(error, errors.docNotFound)) {
         throw errorFactory(errors.commentDoesntExist, 'comment with the specified Id not found');
@@ -66,6 +77,14 @@ module.exports = class CommentsService {
   async deleteCommentLike(commentId, userId) {
     try {
       await this.commentsDb.deleteCommentLike(commentId, userId);
+      const comment = await this.commentsDb.getCommentById(commentId);
+      this.emit('like', {
+        commentId,
+        postId: comment.postId,
+        count: comment.likes,
+        action: 'remove',
+        userId,
+      });
     } catch (error) {
       if (isSpecificError(error, errors.docNotFound)) {
         throw errorFactory(errors.commentDoesntExist, 'comment with the specified Id not found');

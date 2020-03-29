@@ -5,10 +5,12 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 const swaggerUi = require('swagger-ui-express');
+const ioFactory = require('socket.io');
 
 module.exports = class Server {
-  constructor(routes, middleware, serverConfig, corsOptions, logPaths, swaggerDocument) {
+  constructor(routes, middleware, serverConfig, corsOptions, logPaths, swaggerDocument, socketio) {
     this.serverConfig = serverConfig;
+    this.socketio = socketio;
     this.app = express();
 
     const { format, transports } = winston;
@@ -53,6 +55,8 @@ module.exports = class Server {
     } else {
       server = http.createServer(this.app);
     }
+    const io = ioFactory(server);
     server.listen(port);
+    this.socketio(io);
   }
 };

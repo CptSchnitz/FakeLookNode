@@ -44,6 +44,14 @@ module.exports = class AuthService {
     };
   }
 
+  verify(token) {
+    try {
+      return jwt.verify(token, this.jwtSecret);
+    } catch (error) {
+      throw new Error('token verification failed');
+    }
+  }
+
   async createUser(user) {
     const { email, password, ...userDetails } = { ...user };
 

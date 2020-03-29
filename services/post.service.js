@@ -1,4 +1,5 @@
 const shortid = require('shortid');
+const EventEmitter = require('events');
 const { errorFactory, errors, isSpecificError } = require('../utils/errorManager');
 
 const formatPost = (post, userId) => {
@@ -7,8 +8,9 @@ const formatPost = (post, userId) => {
   return formattedPost;
 };
 
-module.exports = class PostService {
+module.exports = class PostService extends EventEmitter {
   constructor(postDb, commentsService, imageService, socialService) {
+    super();
     this.postDb = postDb;
     this.commentsService = commentsService;
     this.imageService = imageService;
@@ -45,6 +47,7 @@ module.exports = class PostService {
 
       await this.postDb.createPost(postFull);
 
+      this.emit('newPost', postFull);
       return postId;
     } catch (err) {
       await this.imageService.deleteImages(imageUuid);
@@ -62,6 +65,13 @@ module.exports = class PostService {
   async addPostLike(postId, userId) {
     try {
       await this.postDb.addPostLike(postId, userId);
+      const post = await this.postDb.getPostById(postId);
+      this.emit('like', {
+        postId,
+        count: post.likes,
+        action: 'add',
+        userId,
+      });
     } catch (error) {
       if (isSpecificError(error, errors.docNotFound)) {
         throw errorFactory(errors.postDoesntExist, 'post with the specified Id not found');
@@ -73,6 +83,13 @@ module.exports = class PostService {
   async deletePostLike(postId, userId) {
     try {
       await this.postDb.deletePostLike(postId, userId);
+      const post = await this.postDb.getPostById(postId);
+      this.emit('like', {
+        postId,
+        count: post.likes,
+        action: 'remove',
+        userId,
+      });
     } catch (error) {
       if (isSpecificError(error, errors.docNotFound)) {
         throw errorFactory(errors.postDoesntExist, 'post with the specified Id not found');

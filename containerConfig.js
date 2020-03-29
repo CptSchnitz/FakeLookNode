@@ -55,6 +55,7 @@ container.register('imageService', ['imagePath'], require('./services/images.ser
 container.register('postService', ['postDb', 'commentsService', 'imageService', 'socialService'], require('./services/post.service'));
 container.register('socialService', ['socialDb'], require('./services/social.service'));
 container.register('tagsService', ['tagsDb'], require('./services/tags.service'));
+container.register('notificationService', ['postService', 'commentsService'], require('./services/notifications.service'));
 
 // controllers
 container.register('authController', ['authService'], require('./controllers/auth.controller'));
@@ -65,7 +66,7 @@ container.register('socialController', ['socialService'], require('./controllers
 container.register('tagsController', ['tagsService'], require('./controllers/tags.controller'));
 
 // middleware
-container.register('authMiddleware', ['jwtSecret'], require('./middleware/auth.middleware'));
+container.register('authMiddleware', ['authService'], require('./middleware/auth.middleware'));
 container.register('middleware', ['logPaths'], require('./middleware'));
 
 // routes
@@ -77,7 +78,8 @@ container.register('usersRoute', ['socialController'], require('./routes/api/use
 container.register('apiRoutes', ['authRoute', 'postsRoute', 'usersRoute', 'tagsRoute', 'commentsRoute', 'authMiddleware'], require('./routes/api'));
 container.register('imageRoute', ['imageController'], require('./routes/images'));
 container.register('routes', ['apiRoutes', 'imageRoute'], require('./routes'));
+container.register('socketio', ['notificationService', 'authService'], require('./socketio'));
 
-container.register('server', ['routes', 'middleware', 'serverConfig', 'corsOptions', 'logPaths', 'swaggerDocument'], require('./server'));
+container.register('server', ['routes', 'middleware', 'serverConfig', 'corsOptions', 'logPaths', 'swaggerDocument', 'socketio'], require('./server'));
 
 module.exports = container;
