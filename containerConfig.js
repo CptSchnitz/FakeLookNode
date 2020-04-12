@@ -36,10 +36,17 @@ container.register('logPaths', [], logPaths);
 const swaggerDocument = yaml.safeLoad(fs.readFileSync('./openapi.yaml', 'utf8'));
 container.register('swaggerDocument', [], swaggerDocument);
 
+// elastic init
+container.register('mappings', [], require('./elastic/mapping.json'));
+container.register('addLike', [], require('./elastic/add-like.json'));
+container.register('removeLike', [], require('./elastic/remove-like.json'));
+container.register('elasticInit', ['mappings', 'addLike', 'removeLike'], require('./elastic/init'));
+
 // db connections
 container.register('sqlPool', ['dbConfig'], require('./db/sqlDb'));
-container.register('elasticClient', ['elasticConfig'], require('./db/elasticClient'));
+container.register('elasticClient', ['elasticConfig', 'elasticInit'], require('./db/elasticClient'));
 container.register('elasticApi', ['elasticClient'], require('./db/elasticApi'));
+
 
 // db repositories
 container.register('authDb', ['sqlPool'], require('./db/auth.db'));

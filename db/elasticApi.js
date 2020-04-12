@@ -5,11 +5,11 @@ const indexName = 'fakelook-posts';
 
 module.exports = class ElasticApi {
   constructor(elasticClient) {
-    this.client = elasticClient.client;
+    this.elasticClient = elasticClient;
   }
 
   async index(id, doc) {
-    const response = await this.client.index({
+    const response = await this.elasticClient.getClient().index({
       id,
       routing: 1,
       index: indexName,
@@ -22,7 +22,7 @@ module.exports = class ElasticApi {
   }
 
   async search(body, size = 20, options = {}) {
-    const response = await this.client.search({
+    const response = await this.elasticClient.getClient().search({
       index: indexName,
       size,
       body,
@@ -32,7 +32,7 @@ module.exports = class ElasticApi {
   }
 
   async getById(id) {
-    const response = await this.client.get({
+    const response = await this.elasticClient.getClient().get({
       index: indexName,
       id,
     });
@@ -44,7 +44,7 @@ module.exports = class ElasticApi {
 
   async addLike(id, userId) {
     try {
-      const response = await this.client.update({
+      const response = await this.elasticClient.getClient().update({
         index: indexName,
         id,
         body: {
@@ -67,7 +67,7 @@ module.exports = class ElasticApi {
 
   async removeLike(id, userId) {
     try {
-      const response = await this.client.update({
+      const response = await this.elasticClient.getClient().update({
         index: indexName,
         id,
         body: {

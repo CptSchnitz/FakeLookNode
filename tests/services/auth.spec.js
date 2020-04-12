@@ -11,9 +11,9 @@ const faker = require('faker');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const authService = require('../services/auth.service');
-const authDb = require('../db/auth.db');
-const socialService = require('../services/social.service');
+const AuthService = require('../../services/auth.service');
+const authDb = require('../../db/auth.db');
+const socialService = require('../../services/social.service');
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
@@ -21,39 +21,60 @@ chai.should();
 
 
 describe('auth service', function () {
-  describe('checkIfEmailUsed', function () {
-    // #region Preperation
-    let getUserStub;
-    beforeEach(function () {
-      getUserStub = sinon.stub(authDb, 'getUserByEmail');
+  let authDbStubInstance;
+  let socialServiceStubInstance;
+  const jwtSecret = faker.random.alphaNumeric;
+  let authInstance;
+
+  this.beforeEach(function () {
+    authDbStubInstance = sinon.createStubInstance(authDb, {
+      createAuthUser: sinon.stub(),
+      deleteAuthUser: sinon.stub(),
+      getUserByEmail: sinon.stub(),
     });
 
+    socialServiceStubInstance = sinon.createStubInstance(socialService, {
+      createUser: sinon.stub(),
+      getUserById: sinon.stub(),
+    });
+
+    authInstance = new AuthService(authDbStubInstance, socialServiceStubInstance, jwtSecret);
+  });
+
+  this.afterAll(function () {
+    sinon.restore();
+  });
+
+
+  describe('checkIfEmailUsed', function () {
+    // #region Preperation
+
     afterEach(function () {
-      getUserStub.restore();
+      authDbStubInstance.getUserByEmail.reset();
     });
     // #endregion
 
     it('should call getUser once and return a boolean', async function () {
-      getUserStub.resolves({});
+      authDbStubInstance.getUserByEmail.resolves({});
 
-      const result = await authService.checkIfEmailUsed(faker.internet.email());
+      const result = await authInstance.checkIfEmailUsed(faker.internet.email());
 
-      getUserStub.should.have.been.calledOnce;
+      authDbStubInstance.getUserByEmail.should.have.been.calledOnce;
       result.should.be.a('boolean');
     });
 
     it('should return true if the email exists', async function () {
-      getUserStub.resolves({});
+      authDbStubInstance.getUserByEmail.resolves({});
 
-      const result = await authService.checkIfEmailUsed(faker.internet.email());
+      const result = await authInstance.checkIfEmailUsed(faker.internet.email());
 
       result.should.be.true;
     });
 
     it('should return false if the email doesnt exists', async function () {
-      getUserStub.resolves(null);
+      authDbStubInstance.getUserByEmail.resolves(null);
 
-      const result = await authService.checkIfEmailUsed(faker.internet.email());
+      const result = await authInstance.checkIfEmailUsed(faker.internet.email());
 
       result.should.be.false;
     });
@@ -71,60 +92,56 @@ describe('auth service', function () {
       firstName: faker.name.firstName,
       lastName: faker.name.lastName,
     };
-    let getUserByEmailStub;
-    let getUserByIdStub;
     let bcryptCompareStub;
     let jwtSignStub;
 
     beforeEach(function () {
-      getUserByEmailStub = sinon.stub(authDb, 'getUserByEmail');
-      getUserByIdStub = sinon.stub(socialService, 'getUserById');
       bcryptCompareStub = sinon.stub(bcrypt, 'compare');
       jwtSignStub = sinon.stub(jwt, 'sign');
     });
 
     afterEach(function () {
-      getUserByEmailStub.restore();
-      getUserByIdStub.restore();
       bcryptCompareStub.restore();
       jwtSignStub.restore();
+      sinon.reset();
     });
     // #endregion
 
     it('should reject with an error if email is not found', async function () {
-      getUserByEmailStub.resolves(undefined);
+      authDbStubInstance.getUserByEmail.resolves(undefined);
 
-      const loginPromise = authService.login(authUserStubValue.email, faker.internet.password);
+      const loginPromise = authInstance.login(authUserStubValue.email, faker.internet.password);
 
       await loginPromise.should.eventually.be.rejectedWith('the email was not found');
-      getUserByEmailStub.should.have.been.calledOnceWith(authUserStubValue.email);
+      authDbStubInstance.getUserByEmail.should.have.been.calledOnceWith(authUserStubValue.email);
       bcryptCompareStub.should.have.not.been.called;
     });
 
     it('should reject with an error if the password doesnt match the hash', async function () {
-      getUserByEmailStub.resolves(authUserStubValue);
+      authDbStubInstance.getUserByEmail.resolves(authUserStubValue);
       bcryptCompareStub.resolves(false);
       const password = faker.internet.password();
 
-      const loginPromise = authService.login(authUserStubValue.email, password);
+      const loginPromise = authInstance.login(authUserStubValue.email, password);
 
       await loginPromise.should.eventually.be.rejectedWith('the password is incorrect');
-      getUserByEmailStub.should.have.been.calledOnceWith(authUserStubValue.email);
+      authDbStubInstance.getUserByEmail.should.have.been.calledOnceWith(authUserStubValue.email);
       bcryptCompareStub.should.have.been.calledOnceWith(password, authUserStubValue.passwordHash);
       jwtSignStub.should.have.not.been.called;
     });
 
     it('should return an object with token, id, firstname, lastname, and expiration', async function () {
-      getUserByEmailStub.resolves(authUserStubValue);
+      authDbStubInstance.getUserByEmail.resolves(authUserStubValue);
       bcryptCompareStub.resolves(true);
       jwtSignStub.returns(faker.random.alphaNumeric(40));
-      getUserByIdStub.resolves(socialUserStubValue);
+      socialServiceStubInstance.getUserById.resolves(socialUserStubValue);
       const password = faker.internet.password();
 
-      const result = await authService.login(authUserStubValue.email, password);
+      const result = await authInstance.login(authUserStubValue.email, password);
 
       bcryptCompareStub.should.have.been.calledOnceWith(password, authUserStubValue.passwordHash);
-      getUserByIdStub.should.have.been.calledOnceWith(authUserStubValue.userId);
+      socialServiceStubInstance.getUserById
+        .should.have.been.calledOnceWith(authUserStubValue.userId);
       jwtSignStub.should.have.been.calledOnce;
       result.idToken.should.be.a('string');
       result.userId.should.be.equal(authUserStubValue.userId);
@@ -136,11 +153,7 @@ describe('auth service', function () {
 
   describe('createUser', function () {
     // #region Preperation
-    let getAuthUserStub = sinon.stub();
     let bcryptHashStub = sinon.stub();
-    let createAuthUserStub = sinon.stub();
-    let createUserStub = sinon.stub();
-    let deleteAuthUserStub = sinon.stub();
 
     const userInput = {
       email: faker.internet.email(),
@@ -153,59 +166,85 @@ describe('auth service', function () {
     };
 
     beforeEach(function () {
-      getAuthUserStub = sinon.stub(authDb, 'getUserByEmail');
       bcryptHashStub = sinon.stub(bcrypt, 'hash');
-      createAuthUserStub = sinon.stub(authDb, 'createAuthUser');
-      createUserStub = sinon.stub(socialService, 'createUser');
-      deleteAuthUserStub = sinon.stub(authDb, 'deleteAuthUser');
     });
 
     afterEach(function () {
-      getAuthUserStub.restore();
+      sinon.reset();
       bcryptHashStub.restore();
-      createAuthUserStub.restore();
-      createUserStub.restore();
-      deleteAuthUserStub.restore();
     });
 
     // #endregion
 
     it('should throw an error if the email is already user', async function () {
-      getAuthUserStub.resolves({});
+      authDbStubInstance.getUserByEmail.resolves({});
 
-      const createUserPromise = authService.createUser(userInput);
+      const createUserPromise = authInstance.createUser(userInput);
+
       await createUserPromise.should.be.rejectedWith('the email is already used');
       bcryptHashStub.should.not.have.been.called;
     });
 
     it('should called delete auth user and throw error if creates user throws an error', async function () {
       const userId = faker.random.number();
-      getAuthUserStub.resolves(undefined);
+      authDbStubInstance.getUserByEmail.resolves(undefined);
       bcryptHashStub.resolves(faker.random.alphaNumeric);
-      createAuthUserStub.resolves(userId);
-      createUserStub.rejects();
+      authDbStubInstance.createAuthUser.resolves(userId);
+      socialServiceStubInstance.createUser.rejects();
 
-      const createUserPromise = authService.createUser(userInput);
+      const createUserPromise = authInstance.createUser(userInput);
 
       await createUserPromise.should.be.rejected;
-      deleteAuthUserStub.should.be.calledAfter(createUserStub);
-      deleteAuthUserStub.should.be.calledWith(userId);
+      authDbStubInstance.deleteAuthUser.should.be.calledAfter(socialServiceStubInstance.createUser);
+      authDbStubInstance.deleteAuthUser.should.be.calledWith(userId);
     });
 
     it('should not throw an error and resolve to the user id', async function () {
       const userId = faker.random.number();
-      getAuthUserStub.resolves(undefined);
+      authDbStubInstance.getUserByEmail.resolves(undefined);
       const hash = faker.random.alphaNumeric;
       bcryptHashStub.resolves(hash);
-      createAuthUserStub.resolves(userId);
+      authDbStubInstance.createAuthUser.resolves(userId);
 
-      const createUserPromise = authService.createUser(userInput);
+      const createUserPromise = authInstance.createUser(userInput);
 
       await createUserPromise.should.eventually.be.equal(userId);
       bcryptHashStub.should.be.calledOnceWith(userInput.password);
-      createAuthUserStub.should.be.calledOnceWithExactly(userInput.email, hash);
-      createUserStub.should.be.calledImmediatelyAfter(createAuthUserStub);
-      deleteAuthUserStub.should.not.be.called;
+      authDbStubInstance.createAuthUser.should.be.calledOnceWithExactly(userInput.email, hash);
+      socialServiceStubInstance.createUser
+        .should.be.calledImmediatelyAfter(authDbStubInstance.createAuthUser);
+      authDbStubInstance.deleteAuthUser.should.not.be.called;
+    });
+  });
+
+  describe('verify', function () {
+    // #region Preperation
+    let jwtVerifyStub = sinon.stub();
+    const payload = {};
+    const token = faker.random.alphaNumeric();
+
+    this.beforeEach(function () {
+      jwtVerifyStub = sinon.stub(jwt, 'verify');
+    });
+
+    afterEach(function () {
+      jwtVerifyStub.restore();
+    });
+    // #endregion
+
+    it('should return the payload if token is valid', function () {
+      jwtVerifyStub.returns(payload);
+
+      const result = authInstance.verify(token);
+
+      jwtVerifyStub.should.be.calledOnceWithExactly(token, jwtSecret);
+      result.should.be.equal(payload);
+    });
+
+    it('should throw an error if the verification fails', function () {
+      jwtVerifyStub.throws();
+
+      (() => authInstance.verify(token)).should.throw('token verification failed');
     });
   });
 });

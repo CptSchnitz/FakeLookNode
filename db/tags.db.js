@@ -32,6 +32,5 @@ module.exports = class TagsDb {
     };
     const response = await this.elasticApi.search(body, 0);
     return response.aggregations.uniqueTags.buckets.map((res) => res.key);
-
   }
 };

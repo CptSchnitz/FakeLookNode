@@ -1,0 +1,6 @@
+{
+  "script": {
+    "source": "if (ctx._source.likedBy.contains(params.userId)){ctx._source.likedBy.remove(ctx._source.likedBy.indexOf(params.userId)); ctx._source.likes -= 1;} else { ctx.op = \"none\";}",
+    "lang": "painless"
+  }
+}

@@ -33,15 +33,16 @@ module.exports = class PostController {
       const error = new Error('Unsupported File Type');
       error.status = 400;
       next(error);
-    }
-    try {
-      const post = { ...req.body, creatorId: req.user.userId };
-      const createdId = await this.postService.createPost(post, req.file.buffer);
+    } else {
+      try {
+        const post = { ...req.body, creatorId: req.user.userId };
+        const createdId = await this.postService.createPost(post, req.file.buffer);
 
-      res.set('Location', `${req.protocol}://${req.get('host')}${req.originalUrl}/${createdId}`);
-      res.status(201).send({ message: 'created', postId: createdId });
-    } catch (err) {
-      next(err);
+        res.set('Location', `${req.protocol}://${req.get('host')}${req.originalUrl}/${createdId}`);
+        res.status(201).send({ message: 'created', postId: createdId });
+      } catch (err) {
+        next(err);
+      }
     }
   }
 

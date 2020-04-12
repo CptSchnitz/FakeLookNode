@@ -42,7 +42,7 @@ module.exports = class AuthController {
     const { email } = req.query;
     try {
       const isEmailTaken = await this.authService.checkIfEmailUsed(email);
-      res.status(200).json(isEmailTaken);
+      res.json(isEmailTaken);
     } catch (error) {
       next(error);
     }

@@ -7,7 +7,7 @@ module.exports = class CommentsController {
 
   async getCommentsByPostId(req, res, next) {
     try {
-      const postId = req.params;
+      const { postId } = req.params;
       const result = await this.commentsService.getCommentsByPostId(postId);
       res.json(result);
     } catch (err) {
@@ -39,7 +39,7 @@ module.exports = class CommentsController {
     } catch (error) {
       if (isSpecificError(error, errors.commentDoesntExist)) {
         error.status = 404;
-      } else if (isSpecificError(error, errors.notLiked)) {
+      } else if (isSpecificError(error, errors.alreadyLiked)) {
         error.status = 400;
       }
       next(error);
